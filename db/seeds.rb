@@ -4,10 +4,10 @@ User.destroy_all
 puts "Creating users..."
 
 users = [
-  { email: "user1@example.com", password: "password123" },
-  { email: "user2@example.com", password: "password123" },
-  { email: "user3@example.com", password: "password123" },
-  { email: "user4@example.com", password: "password123" }
+  { name: "Alice", email: "user1@example.com", password: "password123" },
+  { name: "Jean", email: "user2@example.com", password: "password123" },
+  { name: "Paul", email: "user3@example.com", password: "password123" },
+  { name: "Sophie", email: "user4@example.com", password: "password123" }
 ]
 
 users.each do |attrs|

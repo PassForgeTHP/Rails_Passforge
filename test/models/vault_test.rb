@@ -2,6 +2,10 @@ require "test_helper"
 
 class VaultTest < ActiveSupport::TestCase
   def setup
+    # Clean up before each test
+    Vault.destroy_all
+    User.destroy_all
+
     @user = User.create!(
       email: "test@example.com",
       password: "password123",

@@ -15,5 +15,7 @@ test:
   database: api_passforge_test
 
 production:
-  <<: *default
-  database: api_passforge_production
+  primary:
+    url: <%= ENV['DATABASE_URL'] %>
+  cache:
+    url: <%= ENV['CACHE_DATABASE_URL'] %>

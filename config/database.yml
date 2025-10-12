@@ -15,5 +15,4 @@ test:
   database: api_passforge_test
 
 production:
-  <<: *default
-  database: api_passforge_production
+  url: <%= ENV['DATABASE_URL'] %>

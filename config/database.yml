@@ -7,13 +7,28 @@ default: &default
   host: <%= Rails.application.credentials.postgres[:host] %>
 
 development:
-  <<: *default
-  database: api_passforge_development
+  primary:
+    <<: *default
+    database: api_passforge_development
+  cache:
+    <<: *default
+    database: api_passforge_development
+    migrations_paths: db/cache_migrate
 
 test:
-  <<: *default
-  database: api_passforge_test
+  primary:
+    <<: *default
+    database: api_passforge_test
+  cache:
+    <<: *default
+    database: api_passforge_test
+    migrations_paths: db/cache_migrate
 
 production:
-  <<: *default
-  url: <%= ENV['DATABASE_URL'] %>
+  primary:
+    <<: *default
+    url: <%= ENV['DATABASE_URL'] %>
+  cache:
+    <<: *default
+    url: <%= ENV['DATABASE_URL'] %>
+    migrations_paths: db/cache_migrate

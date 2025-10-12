@@ -19,7 +19,6 @@ Rails.application.configure do
   # config.asset_host = "http://assets.example.com"
 
   # config.action_cable.allowed_request_origins = [ "http://example.com", /http:\/\/example.*/ ]
-  config.action_cable.adapter = :async
 
   # Store uploaded files on the local file system in a temporary directory.
   # config.active_storage.service = :local

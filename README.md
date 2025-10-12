@@ -1,157 +1,53 @@
-# PassForge API
+# PassForge Backend API Rails
 
-Rails API backend for PassForge password manager application.
+This repository contains the **backend API** for PassForge, a secure password management application.
+It provides user **authentication**, **authorization**, and **encrypted password** storage features built with Ruby on Rails.
 
-## Tech Stack
+### Overview 
 
-- **Ruby** 3.4.2
-- **Rails** 8.0.3
-- **PostgreSQL** (database)
-- **Devise** (authentication)
-- **Devise-JWT** (token-based API authentication)
+PassForge’s backend is designed as a Rails API that handles:
+- Secure user registration and authentication using Devise & JWT
+- Encrypted password vault management for users
+- Transactional emails powered by Mailjet (e.g. password reset, confirmation)
 
-## Prerequisites
+### Technologies Used
 
-- Ruby 3.4.2
-- PostgreSQL
-- Bundler
+- Ruby on Rails – RESTful API architecture
+- Devise – Authentication and password management
+- JWT (JSON Web Token) – Stateless session handling
+- Mailjet – Email delivery for authentication workflows
 
-## Local Development Setup
-
-### 1. Clone the repository
+### Set up
 
 ```bash
+# Clone the repository
 git clone https://github.com/PassForgeTHP/Rails_Passforge.git
-cd Rails_Passforge
-```
 
-### 2. Install dependencies
-
-```bash
+# Install dependencies
 bundle install
+
+# Set up the database
+rails db:create db:migrate
+
+# Run the server
+rails s
 ```
 
-### 3. Setup master key
+### Environment Variables
 
-Create `config/master.key` with your Rails master key:
+Make sure to set up the following environment variables in your credentials file:
 
-```bash
-echo "your_master_key_here" > config/master.key
-```
+```ini
+devise:
+  jwt_secret_key: "your jwt secret key"
 
-### 4. Setup database
+postgres:
+  username: 
+  password: 
+  host: 
 
-```bash
-# Create databases
-rails db:create
-
-# Run migrations
-rails db:migrate
-
-# Seed database (optional)
-rails db:seed
-```
-
-### 5. Start the server
-
-```bash
-rails server
-```
-
-API will be available at `http://localhost:3000`
-
-## Running Tests
-
-```bash
-rails test
-```
-
-## Deployment on Render
-
-This application is configured for deployment on [Render](https://render.com/).
-
-### Automatic Deployment
-
-The `render.yaml` file at the root configures:
-- PostgreSQL database (free tier)
-- Web service running Rails API (free tier)
-
-### Steps to Deploy
-
-1. **Push your code** to GitHub
-
-2. **Create a new Web Service** on Render:
-   - Connect your GitHub repository
-   - Render will automatically detect `render.yaml`
-
-3. **Set environment variables** in Render dashboard:
-   - `RAILS_MASTER_KEY`: Your Rails master key
-
-   All other variables are configured automatically via `render.yaml`.
-
-4. **Deploy**:
-   - Render will automatically:
-     - Create the PostgreSQL database
-     - Install dependencies
-     - Run migrations
-     - Start the Puma server
-
-### Manual Configuration (Alternative)
-
-If not using `render.yaml`:
-
-**Build Command:**
-```bash
-bundle install && bundle exec rails db:migrate
-```
-
-**Start Command:**
-```bash
-bundle exec puma -C config/puma.rb
-```
-
-**Environment Variables:**
-- `RAILS_ENV=production`
-- `RAILS_MASTER_KEY=<your_master_key>`
-- `DATABASE_URL=<automatically_provided_by_render>`
-- `RAILS_LOG_TO_STDOUT=enabled`
-- `RAILS_SERVE_STATIC_FILES=enabled`
-
-## API Endpoints
-
-Authentication endpoints:
-- `POST /api/users` - User registration
-- `POST /api/users/sign_in` - User login
-- `DELETE /api/users/sign_out` - User logout
-
-Vault endpoints:
-- Coming soon...
-
-## Project Structure
+mailjet:
+  api_key: "your api"
+  secret_key: "your secret key"
 
 ```
-app/
-├── controllers/     # API controllers
-├── models/         # ActiveRecord models
-└── mailers/        # Email templates
-
-config/
-├── database.yml    # Database configuration
-├── routes.rb       # API routes
-└── initializers/   # App configuration
-
-db/
-├── migrate/        # Database migrations
-└── schema.rb       # Current database schema
-```
-
-## Contributing
-
-1. Create a feature branch
-2. Make your changes
-3. Run tests
-4. Submit a pull request
-
-## License
-
-Private project - All rights reserved

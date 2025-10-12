@@ -1,1 +1,0 @@
-SolidCache.connects_to = { database: { writing: :primary, reading: :primary } }

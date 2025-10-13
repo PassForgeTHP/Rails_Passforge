@@ -9,7 +9,7 @@ module Api
         name: "Test User"
       )
       @token = JWT.encode(
-        { sub: @user.id, exp: 24.hours.from_now.to_i },
+        { sub: @user.id, scp: 'user', exp: 24.hours.from_now.to_i, jti: SecureRandom.uuid },
         Rails.application.credentials.devise[:jwt_secret_key]
       )
       @auth_headers = { "Authorization" => "Bearer #{@token}" }

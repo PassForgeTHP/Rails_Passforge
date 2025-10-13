@@ -86,6 +86,20 @@ module Api
       assert_equal "GitHub", json_response["data"].first["title"]
     end
 
+    test "index with pagination params" do
+      25.times { |i| @user.passwords.create!(title: "Password #{i}", password_encrypted: "enc#{i}") }
+
+      get api_passwords_url, params: { page: 1, per_page: 10 }, headers: @auth_headers
+      assert_response :success
+
+      json_response = JSON.parse(response.body)
+      assert_equal 10, json_response["data"].length
+      assert_equal 1, json_response["pagination"]["page"]
+      assert_equal 10, json_response["pagination"]["per_page"]
+      assert_equal 25, json_response["pagination"]["total"]
+      assert_equal 3, json_response["pagination"]["total_pages"]
+    end
+
     test "index without authentication returns 401" do
       get api_passwords_url
       assert_response :unauthorized

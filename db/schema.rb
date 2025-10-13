@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_10_184551) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_13_135008) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -19,6 +19,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_10_184551) do
     t.datetime "exp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "passwords", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "title", null: false
+    t.string "username"
+    t.text "password_encrypted", null: false
+    t.string "domain"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["domain"], name: "index_passwords_on_domain"
+    t.index ["user_id", "created_at"], name: "index_passwords_on_user_id_and_created_at"
+    t.index ["user_id"], name: "index_passwords_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -46,5 +60,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_10_184551) do
     t.index ["user_id"], name: "index_vaults_on_user_id", unique: true
   end
 
+  add_foreign_key "passwords", "users"
   add_foreign_key "vaults", "users"
 end

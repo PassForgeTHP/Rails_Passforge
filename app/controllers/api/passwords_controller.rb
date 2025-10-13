@@ -89,6 +89,23 @@ module Api
     end
 
     # PUT/PATCH /api/passwords/:id
+    # Updates an existing password entry
+    #
+    # Required params:
+    #   - id: integer (password ID in URL path)
+    #
+    # Expected params:
+    #   - title: string (optional, max 200 chars)
+    #   - username: string (optional, max 255 chars)
+    #   - password_encrypted: text (optional, client-side encrypted)
+    #   - domain: string (optional, max 255 chars)
+    #   - notes: text (optional, max 5000 chars)
+    #
+    # Returns:
+    #   - 200 OK: Updated password object
+    #   - 404 Not Found: Password does not exist or does not belong to user
+    #   - 422 Unprocessable Entity: Validation errors
+    #   - 401 Unauthorized: Missing or invalid JWT token
     def update
       @password = Password.find(params[:id])
       return render json: { error: 'Not found' }, status: :not_found unless @password.user_id == current_user.id

@@ -21,6 +21,7 @@ module Api
 
     # GET /api/passwords/:id
     def show
+      @password = Password.find(params[:id])
     end
 
     # POST /api/passwords

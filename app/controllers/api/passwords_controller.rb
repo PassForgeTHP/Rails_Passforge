@@ -126,6 +126,16 @@ module Api
     #   - 404 Not Found: Password does not exist or does not belong to user
     #   - 422 Unprocessable Entity: Validation errors
     #   - 401 Unauthorized: Missing or invalid JWT token
+    #
+    # Example request:
+    #   PATCH /api/passwords/1
+    #   Authorization: Bearer <jwt_token>
+    #   {
+    #     "password": {
+    #       "title": "GitHub Updated",
+    #       "notes": "Updated notes"
+    #     }
+    #   }
     def update
       @password = Password.find(params[:id])
       return render json: { error: 'Not found' }, status: :not_found unless @password.user_id == current_user.id
@@ -140,6 +150,24 @@ module Api
     end
 
     # DELETE /api/passwords/:id
+    # Deletes a password entry
+    #
+    # Required params:
+    #   - id: integer (password ID in URL path)
+    #
+    # Returns:
+    #   - 200 OK: Success message
+    #   - 404 Not Found: Password does not exist or does not belong to user
+    #   - 401 Unauthorized: Missing or invalid JWT token
+    #
+    # Example request:
+    #   DELETE /api/passwords/1
+    #   Authorization: Bearer <jwt_token>
+    #
+    # Example response:
+    #   {
+    #     "message": "Password deleted successfully"
+    #   }
     def destroy
       @password = Password.find(params[:id])
       return render json: { error: 'Not found' }, status: :not_found unless @password.user_id == current_user.id

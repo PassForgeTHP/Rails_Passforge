@@ -10,5 +10,7 @@ class CreatePasswords < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
+
+    add_index :passwords, [:user_id, :created_at]
   end
 end

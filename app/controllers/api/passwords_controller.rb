@@ -1,5 +1,9 @@
 module Api
   class PasswordsController < Api::ApplicationController
+    # GET /api/passwords
+    def index
+    end
+
     # POST /api/passwords
     # Creates a new password entry for the current user
     #

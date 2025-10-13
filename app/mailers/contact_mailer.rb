@@ -5,8 +5,7 @@ class ContactMailer < ApplicationMailer
     
     @email = email
     @subject = subject
-    @email = email
     @content = content
-    mail(from: email, subject: "Contact Form Message")
+    mail(from: email, subject: subject)
   end
 end

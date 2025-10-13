@@ -1,6 +1,5 @@
 module Api
   class PasswordsController < Api::ApplicationController
-    include Pagy::Backend
     # GET /api/passwords
     # Returns paginated list of password entries for the current user
     #
@@ -27,15 +26,23 @@ module Api
 
       passwords_query = passwords_query.by_domain(params[:domain]) if params[:domain].present?
 
-      @pagy, @passwords = pagy(passwords_query, items: params[:per_page] || 20)
+      # Pagination
+      page = [params[:page].to_i, 1].max
+      per_page = params[:per_page].to_i
+      per_page = 20 if per_page <= 0
+
+      total_count = passwords_query.count
+      total_pages = (total_count.to_f / per_page).ceil
+
+      @passwords = passwords_query.offset((page - 1) * per_page).limit(per_page)
 
       render json: {
         data: @passwords,
         pagination: {
-          page: @pagy.page,
-          per_page: @pagy.items,
-          total: @pagy.count,
-          total_pages: @pagy.pages
+          page: page,
+          per_page: per_page,
+          total: total_count,
+          total_pages: total_pages
         }
       }
     rescue StandardError => e

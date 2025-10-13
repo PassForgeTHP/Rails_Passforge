@@ -19,6 +19,10 @@ module Api
       render json: { error: 'Internal server error' }, status: :internal_server_error
     end
 
+    # GET /api/passwords/:id
+    def show
+    end
+
     # POST /api/passwords
     # Creates a new password entry for the current user
     #

@@ -89,5 +89,43 @@ module Api
       get api_passwords_url
       assert_response :unauthorized
     end
+
+    # Show action tests
+    test "show returns password details" do
+      password = @user.passwords.create!(
+        title: "GitHub",
+        username: "user@example.com",
+        password_encrypted: "enc1",
+        domain: "github.com",
+        notes: "My notes"
+      )
+
+      get api_password_url(password), headers: @auth_headers
+      assert_response :success
+
+      json_response = JSON.parse(response.body)
+      assert_equal "GitHub", json_response["title"]
+      assert_equal "user@example.com", json_response["username"]
+      assert_equal "github.com", json_response["domain"]
+    end
+
+    test "show with invalid id returns 404" do
+      get api_password_url(99999), headers: @auth_headers
+      assert_response :not_found
+    end
+
+    test "show with other user's password returns 404" do
+      other_user = User.create!(email: "other@example.com", password: "password123", name: "Other")
+      other_password = other_user.passwords.create!(title: "Other", password_encrypted: "enc1")
+
+      get api_password_url(other_password), headers: @auth_headers
+      assert_response :not_found
+    end
+
+    test "show without authentication returns 401" do
+      password = @user.passwords.create!(title: "Test", password_encrypted: "enc1")
+      get api_password_url(password)
+      assert_response :unauthorized
+    end
   end
 end

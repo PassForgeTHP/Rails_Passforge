@@ -13,6 +13,15 @@ module Api
     #   - 500 Internal Server Error: Unexpected error
     def index
       @passwords = current_user.passwords.recent
+
+      if params[:search].present?
+        search_query = params[:search]
+        @passwords = @passwords.where(
+          "title ILIKE ? OR username ILIKE ? OR domain ILIKE ?",
+          "%#{search_query}%", "%#{search_query}%", "%#{search_query}%"
+        )
+      end
+
       render json: @passwords
     rescue StandardError => e
       Rails.logger.error "Password list error: #{e.class} - #{e.message}"

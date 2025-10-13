@@ -127,5 +127,79 @@ module Api
       get api_password_url(password)
       assert_response :unauthorized
     end
+
+    # Update action tests
+    test "update with valid data" do
+      password = @user.passwords.create!(title: "Old Title", password_encrypted: "enc1")
+
+      patch api_password_url(password),
+        params: { password: { title: "New Title" } },
+        headers: @auth_headers
+
+      assert_response :success
+      password.reload
+      assert_equal "New Title", password.title
+    end
+
+    test "update with invalid data returns 422" do
+      password = @user.passwords.create!(title: "Test", password_encrypted: "enc1")
+
+      patch api_password_url(password),
+        params: { password: { title: "" } },
+        headers: @auth_headers
+
+      assert_response :unprocessable_entity
+      json_response = JSON.parse(response.body)
+      assert json_response["errors"].present?
+    end
+
+    test "update other user's password returns 404" do
+      other_user = User.create!(email: "other@example.com", password: "password123", name: "Other")
+      other_password = other_user.passwords.create!(title: "Other", password_encrypted: "enc1")
+
+      patch api_password_url(other_password),
+        params: { password: { title: "Hacked" } },
+        headers: @auth_headers
+
+      assert_response :not_found
+    end
+
+    test "update without authentication returns 401" do
+      password = @user.passwords.create!(title: "Test", password_encrypted: "enc1")
+      patch api_password_url(password), params: { password: { title: "New" } }
+      assert_response :unauthorized
+    end
+
+    # Destroy action tests
+    test "destroy with valid password" do
+      password = @user.passwords.create!(title: "To Delete", password_encrypted: "enc1")
+
+      assert_difference "@user.passwords.count", -1 do
+        delete api_password_url(password), headers: @auth_headers
+      end
+
+      assert_response :success
+      json_response = JSON.parse(response.body)
+      assert_equal "Password deleted successfully", json_response["message"]
+    end
+
+    test "destroy other user's password returns 404" do
+      other_user = User.create!(email: "other@example.com", password: "password123", name: "Other")
+      other_password = other_user.passwords.create!(title: "Other", password_encrypted: "enc1")
+
+      delete api_password_url(other_password), headers: @auth_headers
+      assert_response :not_found
+    end
+
+    test "destroy with invalid id returns 404" do
+      delete api_password_url(99999), headers: @auth_headers
+      assert_response :not_found
+    end
+
+    test "destroy without authentication returns 401" do
+      password = @user.passwords.create!(title: "Test", password_encrypted: "enc1")
+      delete api_password_url(password)
+      assert_response :unauthorized
+    end
   end
 end

@@ -1,6 +1,11 @@
 module Api
   class PasswordsController < Api::ApplicationController
     # GET /api/passwords
+    # Returns list of password entries for the current user
+    #
+    # Optional params:
+    #   - search: string (search in title, username, or domain)
+    #   - domain: string (filter by specific domain)
     def index
       @passwords = current_user.passwords.recent
       render json: @passwords

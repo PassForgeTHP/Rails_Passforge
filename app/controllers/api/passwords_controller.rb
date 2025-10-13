@@ -22,6 +22,7 @@ module Api
     # GET /api/passwords/:id
     def show
       @password = Password.find(params[:id])
+      return render json: { error: 'Not found' }, status: :not_found unless @password.user_id == current_user.id
     end
 
     # POST /api/passwords

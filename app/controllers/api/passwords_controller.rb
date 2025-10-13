@@ -119,6 +119,10 @@ module Api
       render json: { error: 'Not found' }, status: :not_found
     end
 
+    # DELETE /api/passwords/:id
+    def destroy
+    end
+
     private
 
     def password_params

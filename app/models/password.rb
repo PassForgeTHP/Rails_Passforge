@@ -13,4 +13,5 @@ class Password < ApplicationRecord
   scope :recent, -> { order(created_at: :desc) }
   scope :by_domain, ->(domain) { where(domain: domain) }
   scope :search_title, ->(query) { where("title ILIKE ?", "%#{query}%") }
+  scope :search_username, ->(query) { where("username ILIKE ?", "%#{query}%") }
 end

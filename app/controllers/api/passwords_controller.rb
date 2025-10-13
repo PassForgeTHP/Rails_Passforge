@@ -1,5 +1,6 @@
 module Api
   class PasswordsController < Api::ApplicationController
+    include Pagy::Backend
     # GET /api/passwords
     # Returns list of password entries for the current user
     #
@@ -12,19 +13,29 @@ module Api
     #   - 401 Unauthorized: Missing or invalid JWT token
     #   - 500 Internal Server Error: Unexpected error
     def index
-      @passwords = current_user.passwords.recent
+      passwords_query = current_user.passwords.recent
 
       if params[:search].present?
         search_query = params[:search]
-        @passwords = @passwords.where(
+        passwords_query = passwords_query.where(
           "title ILIKE ? OR username ILIKE ? OR domain ILIKE ?",
           "%#{search_query}%", "%#{search_query}%", "%#{search_query}%"
         )
       end
 
-      @passwords = @passwords.by_domain(params[:domain]) if params[:domain].present?
+      passwords_query = passwords_query.by_domain(params[:domain]) if params[:domain].present?
 
-      render json: @passwords
+      @pagy, @passwords = pagy(passwords_query, items: params[:per_page] || 20)
+
+      render json: {
+        data: @passwords,
+        pagination: {
+          page: @pagy.page,
+          per_page: @pagy.items,
+          total: @pagy.count,
+          total_pages: @pagy.pages
+        }
+      }
     rescue StandardError => e
       Rails.logger.error "Password list error: #{e.class} - #{e.message}"
       render json: { error: 'Internal server error' }, status: :internal_server_error

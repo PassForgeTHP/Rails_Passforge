@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "contacts/create"
   devise_for :users,
              controllers: {
                sessions: 'users/sessions',
@@ -6,6 +7,8 @@ Rails.application.routes.draw do
              }
   get '/member-data', to: 'members#show'
   get "up" => "rails/health#show", as: :rails_health_check
+
+ resources :contacts, only: [:create], defaults: { format: :json }
 
   # Defines the root path route ("/")
   # root "posts#index"

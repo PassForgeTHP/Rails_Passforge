@@ -123,6 +123,11 @@ module Api
     def destroy
       @password = Password.find(params[:id])
       return render json: { error: 'Not found' }, status: :not_found unless @password.user_id == current_user.id
+
+      @password.destroy
+      render json: { message: 'Password deleted successfully' }, status: :ok
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: 'Not found' }, status: :not_found
     end
 
     private

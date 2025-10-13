@@ -3,6 +3,7 @@ module Api
     # GET /api/passwords
     def index
       @passwords = current_user.passwords
+      render json: @passwords
     end
 
     # POST /api/passwords

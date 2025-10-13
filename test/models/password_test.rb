@@ -78,4 +78,32 @@ class PasswordTest < ActiveSupport::TestCase
 
     assert_equal [password1], Password.by_domain("github.com").to_a
   end
+
+  test "should search by title" do
+    password1 = @user.passwords.create!(title: "GitHub Account", password_encrypted: "enc1")
+    password2 = @user.passwords.create!(title: "GitLab Account", password_encrypted: "enc2")
+    password3 = @user.passwords.create!(title: "Facebook", password_encrypted: "enc3")
+
+    results = Password.search_title("GitHub").to_a
+    assert_includes results, password1
+    assert_not_includes results, password3
+  end
+
+  test "should search by username" do
+    password1 = @user.passwords.create!(title: "Test1", username: "john@example.com", password_encrypted: "enc1")
+    password2 = @user.passwords.create!(title: "Test2", username: "jane@example.com", password_encrypted: "enc2")
+
+    results = Password.search_username("john").to_a
+    assert_includes results, password1
+    assert_not_includes results, password2
+  end
+
+  test "should search by domain" do
+    password1 = @user.passwords.create!(title: "Test1", domain: "github.com", password_encrypted: "enc1")
+    password2 = @user.passwords.create!(title: "Test2", domain: "gitlab.com", password_encrypted: "enc2")
+
+    results = Password.search_domain("github").to_a
+    assert_includes results, password1
+    assert_not_includes results, password2
+  end
 end

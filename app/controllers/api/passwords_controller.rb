@@ -24,6 +24,11 @@ module Api
     #
     # Required params:
     #   - id: integer (password ID in URL path)
+    #
+    # Returns:
+    #   - 200 OK: Password object with all fields
+    #   - 404 Not Found: Password does not exist or does not belong to user
+    #   - 401 Unauthorized: Missing or invalid JWT token
     def show
       @password = Password.find(params[:id])
       return render json: { error: 'Not found' }, status: :not_found unless @password.user_id == current_user.id

@@ -2,6 +2,7 @@ module Api
   class PasswordsController < Api::ApplicationController
     # GET /api/passwords
     def index
+      @passwords = current_user.passwords
     end
 
     # POST /api/passwords

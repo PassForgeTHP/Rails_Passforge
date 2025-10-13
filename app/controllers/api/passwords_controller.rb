@@ -4,6 +4,9 @@ module Api
     def index
       @passwords = current_user.passwords
       render json: @passwords
+    rescue StandardError => e
+      Rails.logger.error "Password list error: #{e.class} - #{e.message}"
+      render json: { error: 'Internal server error' }, status: :internal_server_error
     end
 
     # POST /api/passwords

@@ -24,6 +24,8 @@ module Api
       @password = Password.find(params[:id])
       return render json: { error: 'Not found' }, status: :not_found unless @password.user_id == current_user.id
       render json: @password
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: 'Not found' }, status: :not_found
     end
 
     # POST /api/passwords

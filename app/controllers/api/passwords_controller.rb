@@ -22,6 +22,8 @@ module Api
         )
       end
 
+      @passwords = @passwords.by_domain(params[:domain]) if params[:domain].present?
+
       render json: @passwords
     rescue StandardError => e
       Rails.logger.error "Password list error: #{e.class} - #{e.message}"

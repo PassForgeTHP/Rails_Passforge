@@ -90,6 +90,8 @@ module Api
 
     # PUT/PATCH /api/passwords/:id
     def update
+      @password = Password.find(params[:id])
+      return render json: { error: 'Not found' }, status: :not_found unless @password.user_id == current_user.id
     end
 
     private

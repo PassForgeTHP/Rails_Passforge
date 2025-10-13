@@ -2,7 +2,7 @@ module Api
   class PasswordsController < Api::ApplicationController
     # GET /api/passwords
     def index
-      @passwords = current_user.passwords
+      @passwords = current_user.passwords.recent
       render json: @passwords
     rescue StandardError => e
       Rails.logger.error "Password list error: #{e.class} - #{e.message}"

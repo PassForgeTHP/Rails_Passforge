@@ -88,6 +88,10 @@ module Api
       render json: { error: 'Internal server error' }, status: :internal_server_error
     end
 
+    # PUT/PATCH /api/passwords/:id
+    def update
+    end
+
     private
 
     def password_params

@@ -24,7 +24,8 @@ module Api
       assert_response :success
 
       json_response = JSON.parse(response.body)
-      assert_equal 2, json_response.length
+      assert_equal 2, json_response["data"].length
+      assert json_response["pagination"].present?
     end
 
     test "index does not return other users' passwords" do
@@ -36,8 +37,8 @@ module Api
       assert_response :success
 
       json_response = JSON.parse(response.body)
-      assert_equal 1, json_response.length
-      assert_equal "My Password", json_response.first["title"]
+      assert_equal 1, json_response["data"].length
+      assert_equal "My Password", json_response["data"].first["title"]
     end
 
     test "index with empty password list" do
@@ -45,7 +46,7 @@ module Api
       assert_response :success
 
       json_response = JSON.parse(response.body)
-      assert_equal 0, json_response.length
+      assert_equal 0, json_response["data"].length
     end
 
     test "index orders by recent" do
@@ -57,8 +58,8 @@ module Api
       assert_response :success
 
       json_response = JSON.parse(response.body)
-      assert_equal "Second", json_response.first["title"]
-      assert_equal "First", json_response.last["title"]
+      assert_equal "Second", json_response["data"].first["title"]
+      assert_equal "First", json_response["data"].last["title"]
     end
 
     test "index with search parameter" do
@@ -70,7 +71,7 @@ module Api
       assert_response :success
 
       json_response = JSON.parse(response.body)
-      assert_equal 2, json_response.length
+      assert_equal 2, json_response["data"].length
     end
 
     test "index with domain filter" do
@@ -81,8 +82,8 @@ module Api
       assert_response :success
 
       json_response = JSON.parse(response.body)
-      assert_equal 1, json_response.length
-      assert_equal "GitHub", json_response.first["title"]
+      assert_equal 1, json_response["data"].length
+      assert_equal "GitHub", json_response["data"].first["title"]
     end
 
     test "index without authentication returns 401" do

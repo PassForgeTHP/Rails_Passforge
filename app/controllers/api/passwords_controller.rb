@@ -92,6 +92,14 @@ module Api
     def update
       @password = Password.find(params[:id])
       return render json: { error: 'Not found' }, status: :not_found unless @password.user_id == current_user.id
+
+      if @password.update(password_params)
+        render json: @password
+      else
+        render json: { errors: @password.errors.full_messages }, status: :unprocessable_entity
+      end
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: 'Not found' }, status: :not_found
     end
 
     private

@@ -2,14 +2,16 @@ module Api
   class PasswordsController < Api::ApplicationController
     include Pagy::Backend
     # GET /api/passwords
-    # Returns list of password entries for the current user
+    # Returns paginated list of password entries for the current user
     #
     # Optional params:
     #   - search: string (search in title, username, or domain)
     #   - domain: string (filter by specific domain)
+    #   - page: integer (page number, default: 1)
+    #   - per_page: integer (items per page, default: 20)
     #
     # Returns:
-    #   - 200 OK: Array of password objects ordered by most recent
+    #   - 200 OK: JSON with data array and pagination metadata
     #   - 401 Unauthorized: Missing or invalid JWT token
     #   - 500 Internal Server Error: Unexpected error
     def index

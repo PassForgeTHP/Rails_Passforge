@@ -12,5 +12,6 @@ class CreatePasswords < ActiveRecord::Migration[8.0]
     end
 
     add_index :passwords, [:user_id, :created_at]
+    add_index :passwords, :domain
   end
 end

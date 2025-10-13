@@ -20,6 +20,10 @@ module Api
     end
 
     # GET /api/passwords/:id
+    # Returns a single password entry by ID
+    #
+    # Required params:
+    #   - id: integer (password ID in URL path)
     def show
       @password = Password.find(params[:id])
       return render json: { error: 'Not found' }, status: :not_found unless @password.user_id == current_user.id

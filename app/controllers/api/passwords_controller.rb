@@ -6,6 +6,11 @@ module Api
     # Optional params:
     #   - search: string (search in title, username, or domain)
     #   - domain: string (filter by specific domain)
+    #
+    # Returns:
+    #   - 200 OK: Array of password objects ordered by most recent
+    #   - 401 Unauthorized: Missing or invalid JWT token
+    #   - 500 Internal Server Error: Unexpected error
     def index
       @passwords = current_user.passwords.recent
       render json: @passwords

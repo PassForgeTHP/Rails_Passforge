@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
   # API namespace
   namespace :api, defaults: { format: :json } do
-    resources :passwords, only: [:index, :show, :create]
+    resources :passwords, only: [:index, :show, :create, :update]
   end
 
   # Defines the root path route ("/")

@@ -5,7 +5,9 @@ Rails.application.routes.draw do
                registrations: 'users/registrations'
              }
   get '/member-data', to: 'members#show'
-  delete '/users', to: 'users/registrations#destroy'
+  devise_scope :user do
+    delete '/users', to: 'users/registrations#destroy'
+  end
   get "up" => "rails/health#show", as: :rails_health_check
 
   # API namespace

@@ -2,7 +2,32 @@ class Users::RegistrationsController < Devise::RegistrationsController
   include Rails.application.routes.url_helpers
   respond_to :json
 
-   def update
+  before_action :authenticate_scope!, only: [:update, :destroy]
+
+  def create
+    build_resource(sign_up_params)
+
+    if resource.save
+      token = Warden::JWTAuth::UserEncoder.new.call(resource, :user, nil).first
+
+      render json: {
+        message: 'Signed up successfully.',
+        user: {
+          id: resource.id,
+          name: resource.name,
+          email: resource.email,
+          avatar: resource.avatar.attached? ? url_for(resource.avatar) : nil
+        }
+      }, status: :ok, headers: { 'Authorization' => "Bearer #{token}" }
+    else
+      render json: {
+        message: 'Signup failed.',
+        errors: resource.errors.full_messages
+      }, status: :unprocessable_entity
+    end
+  end
+
+  def update
     user = current_user
 
     if user.update(account_update_params)
@@ -20,6 +45,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
         message: 'Failed to update profile.',
         errors: user.errors.full_messages
       }, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    user = current_user
+    if user.destroy
+      render json: { message: 'User account deleted successfully.' }, status: :ok
+    else
+      render json: { message: 'Failed to delete account.', errors: user.errors.full_messages },
+             status: :unprocessable_entity
     end
   end
   
@@ -49,16 +84,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def account_update_params
     params.require(:user).permit(:name, :email, :password, :password_confirmation, :current_password, :avatar)
-  end
-
-  def destroy
-    user = current_user
-    if user.destroy
-      render json: { message: 'User account deleted successfully.' }, status: :ok
-    else
-      render json: { message: 'Failed to delete account.', errors: user.errors.full_messages },
-             status: :unprocessable_entity
-    end
   end
  
 end

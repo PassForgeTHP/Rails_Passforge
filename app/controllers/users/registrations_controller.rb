@@ -51,5 +51,14 @@ class Users::RegistrationsController < Devise::RegistrationsController
     params.require(:user).permit(:name, :email, :password, :password_confirmation, :current_password, :avatar)
   end
 
+  def destroy
+    user = current_user
+    if user.destroy
+      render json: { message: 'User account deleted successfully.' }, status: :ok
+    else
+      render json: { message: 'Failed to delete account.', errors: user.errors.full_messages },
+             status: :unprocessable_entity
+    end
+  end
  
 end

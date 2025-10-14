@@ -5,6 +5,7 @@ Rails.application.routes.draw do
                registrations: 'users/registrations'
              }
   get '/member-data', to: 'members#show'
+  delete '/users', to: 'users/registrations#destroy'
   get "up" => "rails/health#show", as: :rails_health_check
 
   # API namespace

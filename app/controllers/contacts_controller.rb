@@ -7,7 +7,7 @@ class ContactsController < ApplicationController
     subject = params[:subject]
     content = params[:content]
 
-    contact = ContactMessage.new(email: email, subject: subject, content: content)
+    contact = ContactMail.new(email: email, subject: subject, content: content)
 
     if contact.valid? 
     ContactMailer.contact_email(contact).deliver_now

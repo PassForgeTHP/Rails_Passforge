@@ -58,5 +58,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_10_184551) do
     t.index ["user_id"], name: "index_vaults_on_user_id", unique: true
   end
 
+  add_foreign_key "passwords", "users"
   add_foreign_key "vaults", "users"
 end

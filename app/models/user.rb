@@ -8,4 +8,5 @@ class User < ApplicationRecord
 
   has_one_attached :avatar       
   has_one :vault, dependent: :destroy
+  has_many :passwords, dependent: :destroy
 end

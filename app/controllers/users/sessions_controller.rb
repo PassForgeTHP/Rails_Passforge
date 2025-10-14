@@ -1,4 +1,5 @@
 class Users::SessionsController < Devise::SessionsController
+  include Rails.application.routes.url_helpers
   respond_to :json
 
   private
@@ -6,7 +7,12 @@ class Users::SessionsController < Devise::SessionsController
   def respond_with(_resource, _opts = {})
     render json: {
       message: 'You are logged in.',
-      user: current_user
+      user: {
+        id: resource.id,
+        email: resource.email,
+        name: resource.name,
+        avatar: resource.avatar.attached? ? url_for(resource.avatar) : nil
+      }
     }, status: :ok
   end
 

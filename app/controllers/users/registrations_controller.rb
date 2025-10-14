@@ -1,6 +1,28 @@
 class Users::RegistrationsController < Devise::RegistrationsController
+  include Rails.application.routes.url_helpers
   respond_to :json
 
+   def update
+    user = current_user
+
+    if user.update(account_update_params)
+      render json: {
+        message: 'Profile updated successfully.',
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          avatar: user.avatar.attached? ? url_for(user.avatar) : nil
+        }
+      }, status: :ok
+    else
+      render json: {
+        message: 'Failed to update profile.',
+        errors: user.errors.full_messages
+      }, status: :unprocessable_entity
+    end
+  end
+  
   private
   
   def sign_up_params
@@ -29,23 +51,5 @@ class Users::RegistrationsController < Devise::RegistrationsController
     params.require(:user).permit(:name, :email, :password, :password_confirmation, :current_password, :avatar)
   end
 
-  def update
-    user = current_user
-
-    if user.update(account_update_params)
-      render json: {
-        message: 'Profile updated successfully.',
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email
-        }
-      }, status: :ok
-    else
-      render json: {
-        message: 'Failed to update profile.',
-        errors: user.errors.full_messages
-      }, status: :unprocessable_entity
-    end
-  end
+ 
 end

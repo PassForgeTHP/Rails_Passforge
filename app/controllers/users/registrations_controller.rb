@@ -1,4 +1,5 @@
 class Users::RegistrationsController < Devise::RegistrationsController
+  include Rails.application.routes.url_helpers
   respond_to :json
 
   private
@@ -38,7 +39,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
         user: {
           id: user.id,
           name: user.name,
-          email: user.email
+          email: user.email,
+          avatar: user.avatar.attached? ? url_for(user.avatar) : nil
         }
       }, status: :ok
     else

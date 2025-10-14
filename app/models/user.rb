@@ -6,5 +6,6 @@ class User < ApplicationRecord
          :jwt_authenticatable,
 	       jwt_revocation_strategy: JwtDenylist
 
+  has_one_attached :avatar       
   has_one :vault, dependent: :destroy
 end

@@ -9,7 +9,7 @@ class MembersController < ApplicationController
         id: user.id,
         name: user.name,
         email: user.email,
-        avatar: user.avatar 
+        avatar: user.avatar.attached? ? url_for(user.avatar) : nil
       }
     }
   end

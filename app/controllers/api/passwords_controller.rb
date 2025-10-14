@@ -1,5 +1,73 @@
 module Api
   class PasswordsController < Api::ApplicationController
+    # GET /api/passwords
+    # Returns paginated list of password entries for the current user
+    #
+    # Optional params:
+    #   - search: string (search in title, username, or domain)
+    #   - domain: string (filter by specific domain)
+    #   - page: integer (page number, default: 1)
+    #   - per_page: integer (items per page, default: 20)
+    #
+    # Returns:
+    #   - 200 OK: JSON with data array and pagination metadata
+    #   - 401 Unauthorized: Missing or invalid JWT token
+    #   - 500 Internal Server Error: Unexpected error
+    def index
+      passwords_query = current_user.passwords.recent
+
+      if params[:search].present?
+        search_query = params[:search]
+        passwords_query = passwords_query.where(
+          "title ILIKE ? OR username ILIKE ? OR domain ILIKE ?",
+          "%#{search_query}%", "%#{search_query}%", "%#{search_query}%"
+        )
+      end
+
+      passwords_query = passwords_query.by_domain(params[:domain]) if params[:domain].present?
+
+      # Pagination
+      page = [params[:page].to_i, 1].max
+      per_page = params[:per_page].to_i
+      per_page = 20 if per_page <= 0
+
+      total_count = passwords_query.count
+      total_pages = (total_count.to_f / per_page).ceil
+
+      @passwords = passwords_query.offset((page - 1) * per_page).limit(per_page)
+
+      render json: {
+        data: @passwords,
+        pagination: {
+          page: page,
+          per_page: per_page,
+          total: total_count,
+          total_pages: total_pages
+        }
+      }
+    rescue StandardError => e
+      Rails.logger.error "Password list error: #{e.class} - #{e.message}"
+      render json: { error: 'Internal server error' }, status: :internal_server_error
+    end
+
+    # GET /api/passwords/:id
+    # Returns a single password entry by ID
+    #
+    # Required params:
+    #   - id: integer (password ID in URL path)
+    #
+    # Returns:
+    #   - 200 OK: Password object with all fields
+    #   - 404 Not Found: Password does not exist or does not belong to user
+    #   - 401 Unauthorized: Missing or invalid JWT token
+    def show
+      @password = Password.find(params[:id])
+      return render json: { error: 'Not found' }, status: :not_found unless @password.user_id == current_user.id
+      render json: @password
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: 'Not found' }, status: :not_found
+    end
+
     # POST /api/passwords
     # Creates a new password entry for the current user
     #
@@ -38,6 +106,76 @@ module Api
     rescue StandardError => e
       Rails.logger.error "Password creation error: #{e.class} - #{e.message}"
       render json: { error: 'Internal server error' }, status: :internal_server_error
+    end
+
+    # PUT/PATCH /api/passwords/:id
+    # Updates an existing password entry
+    #
+    # Required params:
+    #   - id: integer (password ID in URL path)
+    #
+    # Expected params:
+    #   - title: string (optional, max 200 chars)
+    #   - username: string (optional, max 255 chars)
+    #   - password_encrypted: text (optional, client-side encrypted)
+    #   - domain: string (optional, max 255 chars)
+    #   - notes: text (optional, max 5000 chars)
+    #
+    # Returns:
+    #   - 200 OK: Updated password object
+    #   - 404 Not Found: Password does not exist or does not belong to user
+    #   - 422 Unprocessable Entity: Validation errors
+    #   - 401 Unauthorized: Missing or invalid JWT token
+    #
+    # Example request:
+    #   PATCH /api/passwords/1
+    #   Authorization: Bearer <jwt_token>
+    #   {
+    #     "password": {
+    #       "title": "GitHub Updated",
+    #       "notes": "Updated notes"
+    #     }
+    #   }
+    def update
+      @password = Password.find(params[:id])
+      return render json: { error: 'Not found' }, status: :not_found unless @password.user_id == current_user.id
+
+      if @password.update(password_params)
+        render json: @password
+      else
+        render json: { errors: @password.errors.full_messages }, status: :unprocessable_entity
+      end
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: 'Not found' }, status: :not_found
+    end
+
+    # DELETE /api/passwords/:id
+    # Deletes a password entry
+    #
+    # Required params:
+    #   - id: integer (password ID in URL path)
+    #
+    # Returns:
+    #   - 200 OK: Success message
+    #   - 404 Not Found: Password does not exist or does not belong to user
+    #   - 401 Unauthorized: Missing or invalid JWT token
+    #
+    # Example request:
+    #   DELETE /api/passwords/1
+    #   Authorization: Bearer <jwt_token>
+    #
+    # Example response:
+    #   {
+    #     "message": "Password deleted successfully"
+    #   }
+    def destroy
+      @password = Password.find(params[:id])
+      return render json: { error: 'Not found' }, status: :not_found unless @password.user_id == current_user.id
+
+      @password.destroy
+      render json: { message: 'Password deleted successfully' }, status: :ok
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: 'Not found' }, status: :not_found
     end
 
     private

@@ -16,7 +16,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
           name: resource.name,
           email: resource.email,
           avatar: resource.avatar.attached? ? url_for(resource.avatar) : nil
-        }
+        },
+        token: token
       }, status: :ok, headers: { 'Authorization' => "Bearer #{token}" }
     else
       render json: {
@@ -28,6 +29,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def update
     user = current_user
+    puts "Current user: #{user.inspect}"
 
     if user.update(account_update_params)
       render json: {

@@ -5,15 +5,19 @@ class Users::SessionsController < Devise::SessionsController
   private
 
   def respond_with(_resource, _opts = {})
-    render json: {
-      message: 'You are logged in.',
-      user: {
-        id: resource.id,
-        email: resource.email,
-        name: resource.name,
-        avatar: resource.avatar.attached? ? url_for(resource.avatar) : nil
-      }
-    }, status: :ok
+    if resource.persisted?
+      render json: {
+        message: 'You are logged in.',
+        user: {
+          id: resource.id,
+          email: resource.email,
+          name: resource.name,
+          avatar: resource.avatar.attached? ? url_for(resource.avatar) : nil
+        }
+      }, status: :ok
+    else
+      render json: { message: 'Invalid email or password.' }, status: :unauthorized
+    end
   end
 
   def respond_to_on_destroy

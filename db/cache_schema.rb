@@ -49,6 +49,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_14_090426) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "passwords", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "title", null: false
+    t.string "username"
+    t.text "password_encrypted", null: false
+    t.string "domain"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["domain"], name: "index_passwords_on_domain"
+    t.index ["user_id", "created_at"], name: "index_passwords_on_user_id_and_created_at"
+    t.index ["user_id"], name: "index_passwords_on_user_id"
+  end
+
   create_table "solid_cache_entries", force: :cascade do |t|
     t.binary "key", null: false
     t.binary "value", null: false

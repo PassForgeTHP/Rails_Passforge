@@ -5,6 +5,9 @@ Rails.application.routes.draw do
                registrations: 'users/registrations'
              }
   get '/member-data', to: 'members#show'
+  devise_scope :user do
+    delete '/users', to: 'users/registrations#destroy'
+  end
   get "up" => "rails/health#show", as: :rails_health_check
 
  resources :contacts, only: [:create], defaults: { format: :json }

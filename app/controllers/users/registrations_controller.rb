@@ -1,8 +1,7 @@
 class Users::RegistrationsController < Devise::RegistrationsController
-  include Rails.application.routes.url_helpers
   respond_to :json
 
-  before_action :authenticate_scope!, only: [:update, :destroy]
+  before_action :authenticate_user!, only: [:update, :destroy]
 
   def create
     build_resource(sign_up_params)

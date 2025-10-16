@@ -2,9 +2,11 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  <% if Rails.application.credentials.postgres.present? %>
   username: <%= Rails.application.credentials.postgres[:username] %>
   password: <%= Rails.application.credentials.postgres[:password] %>
   host: <%= Rails.application.credentials.postgres[:host] %>
+  <% end %>
 
 development:
   primary:

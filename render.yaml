@@ -9,7 +9,7 @@ services:
     runtime: ruby
     plan: free
     buildCommand: bundle install
-    startCommand: bundle exec rails db:migrate && bundle exec puma -C config/puma.rb
+    startCommand: bundle exec rails db:migrate && bundle exec rails db:seed && bundle exec puma -C config/puma.rb
     healthCheckPath: /up
     envVars:
       - key: RAILS_ENV

@@ -24,3 +24,5 @@ services:
         value: enabled
       - key: RAILS_SERVE_STATIC_FILES
         value: enabled
+      - key: FORCE_SEED
+        value: true

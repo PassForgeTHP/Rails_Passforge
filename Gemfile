@@ -50,3 +50,6 @@ gem "devise", "~> 4.9"
 gem "devise-jwt", "~> 0.12.1"
 gem "rack-cors", "~> 3.0"
 gem "pagy", "~> 9.0"
+
+# TOTP (Time-based One-Time Password) for 2FA
+gem "rotp", "~> 6.3"

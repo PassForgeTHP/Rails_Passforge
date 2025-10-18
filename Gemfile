@@ -53,3 +53,6 @@ gem "pagy", "~> 9.0"
 
 # TOTP (Time-based One-Time Password) for 2FA
 gem "rotp", "~> 6.3"
+
+# QR code generation for 2FA setup
+gem "rqrcode", "~> 2.2"

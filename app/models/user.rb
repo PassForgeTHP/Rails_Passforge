@@ -6,8 +6,9 @@ class User < ApplicationRecord
          :jwt_authenticatable,
 	       jwt_revocation_strategy: JwtDenylist
 
-  has_one_attached :avatar       
+  has_one_attached :avatar
   has_one :vault, dependent: :destroy
+  has_one :two_factor_auth, dependent: :destroy
   has_many :passwords, dependent: :destroy
 
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }

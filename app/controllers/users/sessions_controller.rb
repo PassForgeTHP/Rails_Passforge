@@ -6,15 +6,30 @@ class Users::SessionsController < Devise::SessionsController
 
   def respond_with(_resource, _opts = {})
     if resource.persisted?
-      render json: {
-        message: 'You are logged in.',
-        user: {
-          id: resource.id,
-          email: resource.email,
-          name: resource.name,
-          avatar: resource.avatar.attached? ? url_for(resource.avatar) : nil
-        }
-      }, status: :ok
+      # Check if 2FA is enabled for this user
+      if resource.two_factor_auth&.enabled?
+        # Store user_id in session for subsequent 2FA verification
+        session[:pending_2fa_user_id] = resource.id
+
+        # Sign out the user immediately (they will sign in after 2FA)
+        sign_out(resource)
+
+        render json: {
+          requires_2fa: true,
+          message: 'Please enter your 2FA code to complete login'
+        }, status: :ok
+      else
+        # Normal login without 2FA
+        render json: {
+          message: 'You are logged in.',
+          user: {
+            id: resource.id,
+            email: resource.email,
+            name: resource.name,
+            avatar: resource.avatar.attached? ? url_for(resource.avatar) : nil
+          }
+        }, status: :ok
+      end
     else
       render json: { message: 'Invalid email or password.' }, status: :unauthorized
     end

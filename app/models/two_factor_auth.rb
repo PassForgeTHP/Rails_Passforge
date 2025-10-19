@@ -8,6 +8,14 @@ class TwoFactorAuth < ApplicationRecord
   validates :enabled, inclusion: { in: [true, false] }
 
   # Encrypt sensitive data using Rails built-in encryption
+  # CRITICAL: These fields MUST be encrypted to prevent TOTP secret exposure
+  # If an attacker gains database access, they could:
+  # 1. Read TOTP secrets in plaintext
+  # 2. Generate valid 2FA codes for any user
+  # 3. Bypass 2FA protection completely
+  #
+  # Rails encrypts data using AES-256-GCM with keys from credentials file
+  # See: config/credentials/development.yml.enc (or production.yml.enc)
   encrypts :secret_encrypted
   encrypts :backup_codes_encrypted
 

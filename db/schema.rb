@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_14_090426) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_18_215945) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -63,6 +63,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_14_090426) do
     t.index ["user_id"], name: "index_passwords_on_user_id"
   end
 
+  create_table "two_factor_auths", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.text "secret_encrypted", null: false
+    t.boolean "enabled", default: false, null: false
+    t.text "backup_codes_encrypted"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_two_factor_auths_on_user_id", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "email", default: "", null: false
@@ -91,5 +101,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_14_090426) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "passwords", "users"
+  add_foreign_key "two_factor_auths", "users"
   add_foreign_key "vaults", "users"
 end

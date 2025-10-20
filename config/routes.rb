@@ -14,6 +14,16 @@ Rails.application.routes.draw do
   # API namespace
   namespace :api, defaults: { format: :json } do
     resources :passwords, only: [:index, :show, :create, :update, :destroy]
+
+    # Two-factor authentication routes
+    namespace :auth do
+      namespace :two_factor do
+        post 'setup', to: 'two_factor_auth#setup'
+        post 'verify', to: 'two_factor_auth#verify'
+        delete 'disable', to: 'two_factor_auth#disable'
+        post 'verify_login', to: 'two_factor_auth#verify_login'
+      end
+    end
   end
 
   # Defines the root path route ("/")

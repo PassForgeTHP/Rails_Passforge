@@ -11,6 +11,10 @@ class User < ApplicationRecord
   has_one :two_factor_auth, dependent: :destroy
   has_many :passwords, dependent: :destroy
 
+  # extension password
+  has_secure_password :master_password, validations: false
+  validates :master_password, presence: true, on: :create
+
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, presence: true, confirmation: true, length: { minimum: 8 }, on: :create
   validates :password_confirmation, presence: true, on: :create

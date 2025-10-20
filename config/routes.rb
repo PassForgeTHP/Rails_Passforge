@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   # API namespace
   namespace :api, defaults: { format: :json } do
     resources :passwords, only: [:index, :show, :create, :update, :destroy]
+    resource :master_password, only: [:show, :create, :update]
 
     # Two-factor authentication routes
     namespace :auth do

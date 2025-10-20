@@ -36,6 +36,16 @@ module Api
       end
     end
 
+    def verify
+      user = current_user
+
+      unless user.authenticate_master_password(params[:master_password])
+        return render json: { success: false, error: 'Invalid master password' }, status: :unauthorized
+      end
+
+      render json: { success: true, message: 'Vault unlocked' }, status: :ok
+    end
+
     private
 
     def master_password_params

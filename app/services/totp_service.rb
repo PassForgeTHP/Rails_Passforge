@@ -1,3 +1,5 @@
+require "rqrcode"
+
 class TotpService
   ISSUER = "PassForge"
 
@@ -16,20 +18,21 @@ class TotpService
     totp.provisioning_uri(email)
   end
 
-  # Generate a QR code image from a provisioning URI
+  # Generate a QR code SVG from a provisioning URI
   # @param uri [String] the otpauth:// provisioning URI
-  # @return [String] base64-encoded PNG image data
+  # @return [String] SVG HTML string
   def self.generate_qr_code(uri)
-    require 'rqrcode'
     qrcode = RQRCode::QRCode.new(uri)
 
-    png = qrcode.as_png(
-      resize_exactly_to: 300,
-      fill: 'white',
-      color: 'black'
+    svg = qrcode.as_svg(
+      offset: 0,
+      color: "000",
+      shape_rendering: "crispEdges",
+      module_size: 6,
+      standalone: true
     )
 
-    Base64.strict_encode64(png.to_s)
+    svg
   end
 
   # Verify a TOTP code against a secret

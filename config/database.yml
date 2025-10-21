@@ -6,9 +6,8 @@ default: &default
 development:
   <<: *default
   database: api_passforge_development
-  username: <%= Rails.application.credentials.dig(:postgres, :username) %>
-  password: <%= Rails.application.credentials.dig(:postgres, :password) %>
-  host: <%= Rails.application.credentials.dig(:postgres, :host) %>
+  username: toto
+  host: localhost
 
 test:
   <<: *default

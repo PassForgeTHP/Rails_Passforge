@@ -2,6 +2,8 @@ class Users::SessionsController < Devise::SessionsController
   include Rails.application.routes.url_helpers
   respond_to :json
 
+  before_action :authenticate_user!, only: [ :verify_password ]
+
   private
 
   def respond_with(_resource, _opts = {})
@@ -16,12 +18,12 @@ class Users::SessionsController < Devise::SessionsController
 
         render json: {
           requires_2fa: true,
-          message: 'Please enter your 2FA code to complete login'
+          message: "Please enter your 2FA code to complete login"
         }, status: :ok
       else
         # Normal login without 2FA
         render json: {
-          message: 'You are logged in.',
+          message: "You are logged in.",
           user: {
             id: resource.id,
             email: resource.email,
@@ -31,7 +33,7 @@ class Users::SessionsController < Devise::SessionsController
         }, status: :ok
       end
     else
-      render json: { message: 'Invalid email or password.' }, status: :unauthorized
+      render json: { message: "Invalid email or password." }, status: :unauthorized
     end
   end
 
@@ -42,10 +44,18 @@ class Users::SessionsController < Devise::SessionsController
   end
 
   def log_out_success
-    render json: { message: 'You are logged out.' }, status: :ok
+    render json: { message: "You are logged out." }, status: :ok
   end
 
   def log_out_failure
-    render json: { message: 'Hmm nothing happened.' }, status: :unauthorized
+    render json: { message: "Hmm nothing happened." }, status: :unauthorized
+  end
+
+  def verify_password
+    if current_user.valid_password?(params[:password])
+      render json: { success: true }, status: :ok
+    else
+      render json: { error: "Invalid password" }, status: :unauthorized
+    end
   end
 end

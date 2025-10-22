@@ -15,4 +15,25 @@ class TwoFactorAuthController < ApplicationController
       render json: { success: false, error: "Invalid OTP code." }, status: :unprocessable_entity
     end
   end
+
+  def verify_login
+    user_id = session[:pending_2fa_user_id]
+    user = User.find_by(id: user_id)
+
+    if user && user.validate_and_consume_otp!(params[:otp_code])
+      session.delete(:pending_2fa_user_id)
+      sign_in(user)
+      render json: {
+        message: "Login successful",
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          avatar: user.avatar.attached? ? url_for(user.avatar) : nil
+        }
+      }, status: :ok
+    else
+      render json: { error: "Invalid 2FA code" }, status: :unauthorized
+    end
+  end
 end

@@ -99,9 +99,11 @@ Devise.setup do |config|
   # passing skip: :sessions to `devise_for` in your config/routes.rb
   config.skip_session_storage = [ :http_auth, :user ]
 
-  config.jwt do |jwt|
+  config.  jwt do |jwt|
     jwt.secret = Rails.application.credentials.devise[:jwt_secret_key]
     jwt.dispatch_requests = [
+      [ "POST", %r{^/users/sign_in$} ],
+      [ "POST", %r{^/api/auth/two_factor/verify_login$} ],
       [ "POST", %r{^/2fa/setup$} ],
       [ "POST", %r{^/2fa/enable$} ],
       [ "DELETE", %r{^/2fa/disable$} ],

@@ -100,7 +100,7 @@ Devise.setup do |config|
   config.skip_session_storage = [ :http_auth, :user ]
 
   config.  jwt do |jwt|
-    jwt.secret = Rails.application.credentials.devise[:jwt_secret_key]
+    jwt.secret = Rails.application.credentials.devise[:jwt_secret_key] rescue "my_secret_key"
     jwt.dispatch_requests = [
       [ "POST", %r{^/users/sign_in$} ],
       [ "POST", %r{^/api/auth/two_factor/verify_login$} ],

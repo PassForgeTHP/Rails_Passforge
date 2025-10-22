@@ -10,16 +10,29 @@ class Api::UsersController < ApplicationController
   end
 
   def logout_all
-    Rails.logger.info "Logout all called for user: #{current_user&.id}"
-    if current_user.update(jti: SecureRandom.uuid)
-      Rails.logger.info "JTI updated successfully for user #{current_user.id}"
-      render json: { message: "Logged out from all devices successfully" }, status: :ok
-    else
-      Rails.logger.error "Failed to update JTI for user #{current_user.id}: #{current_user.errors.full_messages}"
-      render json: { error: "Failed to logout" }, status: :unprocessable_entity
+    puts "Logout all called, current_user: #{current_user.inspect}"
+    puts "User columns: #{User.column_names}"
+    if current_user.nil?
+      puts "Current user is nil"
+      render json: { error: "Not authenticated" }, status: :unauthorized
+      return
     end
-  rescue => e
-    Rails.logger.error "Exception in logout_all: #{e.message}"
-    render json: { error: e.message }, status: :internal_server_error
+    new_jti = SecureRandom.uuid
+    puts "Updating JTI to #{new_jti}"
+    begin
+      success = current_user.update(jti: new_jti)
+      puts "Update success: #{success}"
+      if success
+        puts "JTI updated successfully for user #{current_user.id}"
+        render json: { message: "Logged out from all devices successfully" }, status: :ok
+      else
+        puts "Failed to update JTI for user #{current_user.id}: #{current_user.errors.full_messages}"
+        render json: { error: "Failed to logout" }, status: :unprocessable_entity
+      end
+    rescue => e
+      puts "Exception in logout_all: #{e.message}"
+      puts e.backtrace
+      render json: { error: e.message }, status: :internal_server_error
+    end
   end
 end

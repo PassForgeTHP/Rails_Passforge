@@ -10,9 +10,9 @@ class TwoFactorAuthController < ApplicationController
     if user.validate_and_consume_otp!(params[:otp_code])
       user.otp_required_for_login = true
       user.save!
-      render json: { success: true, user: user.as_json(only: [:id, :email, :name, :two_factor_enabled]) }
+      render json: { success: true, user: user.as_json(only: [ :id, :email, :name, :two_factor_enabled ]) }
     else
-      render json: { success: false, error: 'Invalid OTP code.' }, status: :unprocessable_entity
+      render json: { success: false, error: "Invalid OTP code." }, status: :unprocessable_entity
     end
   end
 end

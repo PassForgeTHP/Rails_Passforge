@@ -27,7 +27,8 @@ Rails.application.routes.draw do
       end
     end
     post "users/verify_password", to: "users#verify_password"
-  end
+    delete "users/logout_all", to: "users#logout_all"
+   end
 
 
 

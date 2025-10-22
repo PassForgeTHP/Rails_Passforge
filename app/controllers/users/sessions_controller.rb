@@ -2,8 +2,6 @@ class Users::SessionsController < Devise::SessionsController
   include Rails.application.routes.url_helpers
   respond_to :json
 
-  before_action :authenticate_user!, only: [ :verify_password ]
-
   private
 
   def respond_with(_resource, _opts = {})
@@ -48,14 +46,6 @@ class Users::SessionsController < Devise::SessionsController
   end
 
   def log_out_failure
-    render json: { message: "Hmm nothing happened." }, status: :unauthorized
-  end
-
-  def verify_password
-    if current_user.valid_password?(params[:password])
-      render json: { success: true }, status: :ok
-    else
-      render json: { error: "Invalid password" }, status: :unauthorized
-    end
+    log_out_failure
   end
 end

@@ -1,0 +1,199 @@
+=> Booting Puma
+=> Rails 8.0.3 application starting in development 
+=> Run `bin/rails server --help` for more startup options
+Puma starting in single mode...
+* Puma version: 7.0.4 ("Romantic Warrior")
+* Ruby version: ruby 3.4.5 (2025-07-16 revision 20cda200d3) +YJIT +PRISM [arm64-darwin25]
+*  Min threads: 3
+*  Max threads: 3
+*  Environment: development
+*          PID: 33533
+* Listening on http://127.0.0.1:3000
+* Listening on http://[::1]:3000
+Use Ctrl-C to stop
+Started POST "/users/sign_in" for ::1 at 2025-10-22 11:02:15 +0200
+  [1m[36mActiveRecord::SchemaMigration Load (0.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='BoilerplateRailsApi'*/[0m
+Processing by Users::SessionsController#create as */*
+  Parameters: {"user" => {"email" => "[FILTERED]", "password" => "[FILTERED]"}, "session" => {"user" => {"email" => "[FILTERED]", "password" => "[FILTERED]"}}}
+Completed 404 Not Found in 1ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+  
+AbstractController::ActionNotFound (The verify_password action could not be found for the :authenticate_user!
+callback on Users::SessionsController, but it is listed in the controller's
+:only option.
+
+Raising for missing callback actions is a new default in Rails 7.1, if you'd
+like to turn this off you can delete the option from the environment configurations
+or set `config.action_controller.raise_on_missing_callback_actions` to `false`.
+):
+  
+actionpack (8.0.3) lib/abstract_controller/callbacks.rb:62:in 'AbstractController::Callbacks::ActionFilter#match?'
+activesupport (8.0.3) lib/active_support/callbacks.rb:384:in 'block in ActiveSupport::Callbacks::CallTemplate::ObjectCall#make_lambda'
+activesupport (8.0.3) lib/active_support/callbacks.rb:177:in 'block in ActiveSupport::Callbacks::Filters::Before#call'
+activesupport (8.0.3) lib/active_support/callbacks.rb:177:in 'Array#all?'
+activesupport (8.0.3) lib/active_support/callbacks.rb:177:in 'ActiveSupport::Callbacks::Filters::Before#call'
+activesupport (8.0.3) lib/active_support/callbacks.rb:559:in 'block in ActiveSupport::Callbacks::CallbackSequence#invoke_before'
+activesupport (8.0.3) lib/active_support/callbacks.rb:559:in 'Array#each'
+activesupport (8.0.3) lib/active_support/callbacks.rb:559:in 'ActiveSupport::Callbacks::CallbackSequence#invoke_before'
+activesupport (8.0.3) lib/active_support/callbacks.rb:108:in 'ActiveSupport::Callbacks#run_callbacks'
+actionpack (8.0.3) lib/abstract_controller/callbacks.rb:260:in 'AbstractController::Callbacks#process_action'
+actionpack (8.0.3) lib/action_controller/metal/rescue.rb:27:in 'ActionController::Rescue#process_action'
+actionpack (8.0.3) lib/action_controller/metal/instrumentation.rb:76:in 'block in ActionController::Instrumentation#process_action'
+activesupport (8.0.3) lib/active_support/notifications.rb:210:in 'block in ActiveSupport::Notifications.instrument'
+activesupport (8.0.3) lib/active_support/notifications/instrumenter.rb:58:in 'ActiveSupport::Notifications::Instrumenter#instrument'
+activesupport (8.0.3) lib/active_support/notifications.rb:210:in 'ActiveSupport::Notifications.instrument'
+actionpack (8.0.3) lib/action_controller/metal/instrumentation.rb:75:in 'ActionController::Instrumentation#process_action'
+actionpack (8.0.3) lib/action_controller/metal/params_wrapper.rb:259:in 'ActionController::ParamsWrapper#process_action'
+activerecord (8.0.3) lib/active_record/railties/controller_runtime.rb:39:in 'ActiveRecord::Railties::ControllerRuntime#process_action'
+actionpack (8.0.3) lib/abstract_controller/base.rb:152:in 'AbstractController::Base#process'
+actionpack (8.0.3) lib/action_controller/metal.rb:252:in 'ActionController::Metal#dispatch'
+actionpack (8.0.3) lib/action_controller/metal.rb:335:in 'ActionController::Metal.dispatch'
+actionpack (8.0.3) lib/action_dispatch/routing/route_set.rb:67:in 'ActionDispatch::Routing::RouteSet::Dispatcher#dispatch'
+actionpack (8.0.3) lib/action_dispatch/routing/route_set.rb:50:in 'ActionDispatch::Routing::RouteSet::Dispatcher#serve'
+actionpack (8.0.3) lib/action_dispatch/routing/mapper.rb:32:in 'block in <class:Constraints>'
+actionpack (8.0.3) lib/action_dispatch/routing/mapper.rb:62:in 'ActionDispatch::Routing::Mapper::Constraints#serve'
+actionpack (8.0.3) lib/action_dispatch/journey/router.rb:53:in 'block in ActionDispatch::Journey::Router#serve'
+actionpack (8.0.3) lib/action_dispatch/journey/router.rb:133:in 'block in ActionDispatch::Journey::Router#find_routes'
+actionpack (8.0.3) lib/action_dispatch/journey/router.rb:126:in 'Array#each'
+actionpack (8.0.3) lib/action_dispatch/journey/router.rb:126:in 'ActionDispatch::Journey::Router#find_routes'
+actionpack (8.0.3) lib/action_dispatch/journey/router.rb:34:in 'ActionDispatch::Journey::Router#serve'
+actionpack (8.0.3) lib/action_dispatch/routing/route_set.rb:908:in 'ActionDispatch::Routing::RouteSet#call'
+railties (8.0.3) lib/rails/engine/lazy_route_set.rb:60:in 'Rails::Engine::LazyRouteSet#call'
+warden-jwt_auth (0.12.0) lib/warden/jwt_auth/middleware/token_dispatcher.rb:20:in 'Warden::JWTAuth::Middleware::TokenDispatcher#call'
+warden-jwt_auth (0.12.0) lib/warden/jwt_auth/middleware/revocation_manager.rb:21:in 'Warden::JWTAuth::Middleware::RevocationManager#call'
+rack (3.2.1) lib/rack/builder.rb:283:in 'Rack::Builder#call'
+warden-jwt_auth (0.12.0) lib/warden/jwt_auth/middleware.rb:22:in 'Warden::JWTAuth::Middleware#call'
+rack-session (2.1.1) lib/rack/session/abstract/id.rb:274:in 'Rack::Session::Abstract::Persisted#context'
+rack-session (2.1.1) lib/rack/session/abstract/id.rb:268:in 'Rack::Session::Abstract::Persisted#call'
+actionpack (8.0.3) lib/action_dispatch/middleware/cookies.rb:706:in 'ActionDispatch::Cookies#call'
+warden (1.2.9) lib/warden/manager.rb:36:in 'block in Warden::Manager#call'
+warden (1.2.9) lib/warden/manager.rb:34:in 'Kernel#catch'
+warden (1.2.9) lib/warden/manager.rb:34:in 'Warden::Manager#call'
+rack (3.2.1) lib/rack/etag.rb:29:in 'Rack::ETag#call'
+rack (3.2.1) lib/rack/conditional_get.rb:44:in 'Rack::ConditionalGet#call'
+rack (3.2.1) lib/rack/head.rb:15:in 'Rack::Head#call'
+activerecord (8.0.3) lib/active_record/migration.rb:670:in 'ActiveRecord::Migration::CheckPending#call'
+actionpack (8.0.3) lib/action_dispatch/middleware/callbacks.rb:31:in 'block in ActionDispatch::Callbacks#call'
+activesupport (8.0.3) lib/active_support/callbacks.rb:100:in 'ActiveSupport::Callbacks#run_callbacks'
+actionpack (8.0.3) lib/action_dispatch/middleware/callbacks.rb:30:in 'ActionDispatch::Callbacks#call'
+actionpack (8.0.3) lib/action_dispatch/middleware/executor.rb:16:in 'ActionDispatch::Executor#call'
+actionpack (8.0.3) lib/action_dispatch/middleware/actionable_exceptions.rb:18:in 'ActionDispatch::ActionableExceptions#call'
+actionpack (8.0.3) lib/action_dispatch/middleware/debug_exceptions.rb:31:in 'ActionDispatch::DebugExceptions#call'
+actionpack (8.0.3) lib/action_dispatch/middleware/show_exceptions.rb:32:in 'ActionDispatch::ShowExceptions#call'
+railties (8.0.3) lib/rails/rack/logger.rb:41:in 'Rails::Rack::Logger#call_app'
+railties (8.0.3) lib/rails/rack/logger.rb:29:in 'Rails::Rack::Logger#call'
+actionpack (8.0.3) lib/action_dispatch/middleware/remote_ip.rb:96:in 'ActionDispatch::RemoteIp#call'
+actionpack (8.0.3) lib/action_dispatch/middleware/request_id.rb:34:in 'ActionDispatch::RequestId#call'
+rack (3.2.1) lib/rack/runtime.rb:24:in 'Rack::Runtime#call'
+actionpack (8.0.3) lib/action_dispatch/middleware/server_timing.rb:61:in 'block in ActionDispatch::ServerTiming#call'
+actionpack (8.0.3) lib/action_dispatch/middleware/server_timing.rb:26:in 'ActionDispatch::ServerTiming::Subscriber#collect_events'
+actionpack (8.0.3) lib/action_dispatch/middleware/server_timing.rb:60:in 'ActionDispatch::ServerTiming#call'
+actionpack (8.0.3) lib/action_dispatch/middleware/executor.rb:16:in 'ActionDispatch::Executor#call'
+actionpack (8.0.3) lib/action_dispatch/middleware/static.rb:27:in 'ActionDispatch::Static#call'
+rack (3.2.1) lib/rack/sendfile.rb:114:in 'Rack::Sendfile#call'
+actionpack (8.0.3) lib/action_dispatch/middleware/host_authorization.rb:143:in 'ActionDispatch::HostAuthorization#call'
+rack-cors (3.0.0) lib/rack/cors.rb:102:in 'Rack::Cors#call'
+railties (8.0.3) lib/rails/engine.rb:535:in 'Rails::Engine#call'
+puma (7.0.4) lib/puma/configuration.rb:299:in 'Puma::Configuration::ConfigMiddleware#call'
+puma (7.0.4) lib/puma/request.rb:101:in 'block in Puma::Request#handle_request'
+puma (7.0.4) lib/puma/thread_pool.rb:346:in 'Puma::ThreadPool#with_force_shutdown'
+puma (7.0.4) lib/puma/request.rb:100:in 'Puma::Request#handle_request'
+puma (7.0.4) lib/puma/server.rb:506:in 'Puma::Server#process_client'
+puma (7.0.4) lib/puma/server.rb:265:in 'block in Puma::Server#run'
+puma (7.0.4) lib/puma/thread_pool.rb:173:in 'block in Puma::ThreadPool#spawn_thread'
+Started POST "/users/sign_in" for ::1 at 2025-10-22 11:02:33 +0200
+  
+SyntaxError (/Users/toto/Desktop/THP/Projet_final/Rails_Passforge/app/controllers/users/sessions_controller.rb:60: syntax error found
+  58 |     end
+  59 |   end
+> 60 | end
+     | ^~~ unexpected 'end', ignoring it
+):
+  
+app/controllers/users/sessions_controller.rb:60: syntax error found
+Started POST "/users/sign_in" for ::1 at 2025-10-22 11:02:52 +0200
+Processing by Users::SessionsController#create as */*
+  Parameters: {"user" => {"email" => "[FILTERED]", "password" => "[FILTERED]"}, "session" => {"user" => {"email" => "[FILTERED]", "password" => "[FILTERED]"}}}
+  [1m[36mUser Load (1.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = 'test@example.com' ORDER BY "users"."id" ASC LIMIT 1 /*action='create',application='BoilerplateRailsApi',controller='sessions'*/[0m
+Completed 401 Unauthorized in 47ms (ActiveRecord: 18.5ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Processing by Users::SessionsController#new as */*
+  Parameters: {"user" => {"email" => "[FILTERED]", "password" => "[FILTERED]"}, "session" => {"user" => {"email" => "[FILTERED]", "password" => "[FILTERED]"}}}
+Completed 401 Unauthorized in 260ms (Views: 0.2ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/users/sign_in" for 127.0.0.1 at 2025-10-22 11:11:08 +0200
+Processing by Users::SessionsController#create as */*
+  Parameters: {"user" => {"email" => "[FILTERED]", "password" => "[FILTERED]"}, "session" => {"user" => {"email" => "[FILTERED]", "password" => "[FILTERED]"}}}
+  [1m[36mUser Load (3.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = 'test@1.com' ORDER BY "users"."id" ASC LIMIT 1 /*action='create',application='BoilerplateRailsApi',controller='sessions'*/[0m
+  [1m[36mTwoFactorAuth Load (2.0ms)[0m  [1m[34mSELECT "two_factor_auths".* FROM "two_factor_auths" WHERE "two_factor_auths"."user_id" = 5 LIMIT 1 /*action='create',application='BoilerplateRailsApi',controller='sessions'*/[0m
+  ↳ app/controllers/users/sessions_controller.rb:10:in 'Users::SessionsController#respond_with'
+  [1m[36mActiveStorage::Attachment Load (1.1ms)[0m  [1m[34mSELECT "active_storage_attachments".* FROM "active_storage_attachments" WHERE "active_storage_attachments"."record_id" = 5 AND "active_storage_attachments"."record_type" = 'User' AND "active_storage_attachments"."name" = 'avatar' LIMIT 1 /*action='create',application='BoilerplateRailsApi',controller='sessions'*/[0m
+  ↳ app/controllers/users/sessions_controller.rb:29:in 'Users::SessionsController#respond_with'
+Completed 200 OK in 367ms (Views: 0.2ms | ActiveRecord: 25.9ms (3 queries, 0 cached) | GC: 15.8ms)
+
+
+Started GET "/member-data" for 127.0.0.1 at 2025-10-22 11:11:10 +0200
+Started GET "/member-data" for 127.0.0.1 at 2025-10-22 11:11:10 +0200
+  
+ActionController::RoutingError (No route matches [GET] "/member-data"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/member-data"):
+  
+Started POST "/api/users/verify_password" for 127.0.0.1 at 2025-10-22 11:11:14 +0200
+Processing by Api::UsersController#verify_password as JSON
+  Parameters: {"password" => "[FILTERED]", "user" => {}}
+  [1m[36mUser Load (1.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 5 LIMIT 1 /*action='verify_password',application='BoilerplateRailsApi',controller='users'*/[0m
+Completed 200 OK in 269ms (Views: 0.2ms | ActiveRecord: 1.1ms (1 query, 0 cached) | GC: 1.0ms)
+
+
+Started POST "/api/auth/two_factor/setup" for 127.0.0.1 at 2025-10-22 11:11:15 +0200
+Processing by Api::Auth::TwoFactor::TwoFactorAuthController#setup as JSON
+  [1m[36mUser Load (1.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 5 LIMIT 1 /*action='setup',application='BoilerplateRailsApi',controller='two_factor_auth'*/[0m
+--- DÉBUT DIAGNOSTIC 2FA ---
+Utilisateur: test@1.com
+1. Génération du secret...
+Secret généré.
+2. Génération de l'URI...
+URI générée.
+3. Génération du QR code...
+QR code généré.
+4. Envoi de la réponse JSON...
+--- DIAGNOSTIC TERMINÉ AVEC SUCCÈS ---
+Completed 200 OK in 59ms (Views: 6.5ms | ActiveRecord: 1.0ms (1 query, 0 cached) | GC: 8.6ms)
+
+
+Started GET "/member-data" for 127.0.0.1 at 2025-10-22 11:13:49 +0200
+Started GET "/member-data" for 127.0.0.1 at 2025-10-22 11:13:49 +0200
+  
+ActionController::RoutingError (No route matches [GET] "/member-data"):
+  
+  
+ActionController::RoutingError (No route matches [GET] "/member-data"):
+  
+Started POST "/api/users/verify_password" for 127.0.0.1 at 2025-10-22 11:13:53 +0200
+Processing by Api::UsersController#verify_password as JSON
+  Parameters: {"password" => "[FILTERED]", "user" => {}}
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 5 LIMIT 1 /*action='verify_password',application='BoilerplateRailsApi',controller='users'*/[0m
+Completed 200 OK in 266ms (Views: 0.3ms | ActiveRecord: 5.6ms (1 query, 0 cached) | GC: 0.0ms)
+
+
+Started POST "/api/auth/two_factor/setup" for 127.0.0.1 at 2025-10-22 11:13:54 +0200
+Processing by Api::Auth::TwoFactor::TwoFactorAuthController#setup as JSON
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = 5 LIMIT 1 /*action='setup',application='BoilerplateRailsApi',controller='two_factor_auth'*/[0m
+--- DÉBUT DIAGNOSTIC 2FA ---
+Utilisateur: test@1.com
+1. Génération du secret...
+Secret généré.
+2. Génération de l'URI...
+URI générée.
+3. Génération du QR code...
+QR code généré.
+4. Envoi de la réponse JSON...
+--- DIAGNOSTIC TERMINÉ AVEC SUCCÈS ---
+Completed 200 OK in 37ms (Views: 1.0ms | ActiveRecord: 0.5ms (1 query, 0 cached) | GC: 7.7ms)
+
+

@@ -8,6 +8,10 @@ class User < ApplicationRecord
   # ActiveStorage for avatar
   has_one_attached :avatar
 
+  # Associations
+  has_one :vault, dependent: :destroy
+  has_many :passwords, dependent: :destroy
+
   # 2FA association
   has_one :two_factor_auth, dependent: :destroy
 

@@ -8,4 +8,9 @@ class Api::UsersController < ApplicationController
       render json: { error: "Invalid password" }, status: :unauthorized
     end
   end
+
+  def logout_all
+    current_user.update(jti: SecureRandom.uuid)
+    render json: { message: "Logged out from all devices successfully" }, status: :ok
+  end
 end

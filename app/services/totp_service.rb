@@ -26,7 +26,7 @@ class TotpService
 
     svg = qrcode.as_svg(
       offset: 0,
-      color: "000",
+      color: "currentColor",
       shape_rendering: "crispEdges",
       module_size: 6,
       standalone: true

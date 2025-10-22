@@ -4,7 +4,7 @@ source "https://rubygems.org"
 gem "rails", "~> 8.0.3"
 # Use sqlite3 as the database for Active Record
 gem "sqlite3", "~> 2.1"
-gem "pg", "~> 1.5" 
+gem "pg", "~> 1.5"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
@@ -17,7 +17,7 @@ gem "puma", ">= 5.0"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
-gem "solid_cache", group: [:development, :test]  # Only in dev/test
+gem "solid_cache", group: [ :development, :test ]  # Only in dev/test
 gem "solid_queue"
 gem "solid_cable"
 

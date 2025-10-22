@@ -197,3 +197,5 @@ QR code généré.
 Completed 200 OK in 37ms (Views: 1.0ms | ActiveRecord: 0.5ms (1 query, 0 cached) | GC: 7.7ms)
 
 
+- Gracefully stopping, waiting for requests to finish
+Exiting

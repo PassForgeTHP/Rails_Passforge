@@ -10,7 +10,12 @@ class Api::UsersController < ApplicationController
   end
 
   def logout_all
-    current_user.update(jti: SecureRandom.uuid)
-    render json: { message: "Logged out from all devices successfully" }, status: :ok
+    if current_user.update(jti: SecureRandom.uuid)
+      render json: { message: "Logged out from all devices successfully" }, status: :ok
+    else
+      render json: { error: "Failed to logout" }, status: :unprocessable_entity
+    end
+  rescue => e
+    render json: { error: e.message }, status: :internal_server_error
   end
 end

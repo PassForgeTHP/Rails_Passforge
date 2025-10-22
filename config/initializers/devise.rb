@@ -100,15 +100,31 @@ Devise.setup do |config|
   config.skip_session_storage = [ :http_auth, :user ]
 
   config.  jwt do |jwt|
-    jwt.secret = Rails.application.credentials.devise[:jwt_secret_key] rescue "my_secret_key"
+    if Rails.env.test?
+      jwt.secret = "test_secret_key_for_jwt_authentication_in_tests"
+    else
+      jwt.secret = Rails.application.credentials.devise[:jwt_secret_key] || "my_secret_key"
+    end
     jwt.dispatch_requests = [
       [ "POST", %r{^/users/sign_in$} ],
       [ "POST", %r{^/api/auth/two_factor/verify_login$} ],
       [ "POST", %r{^/2fa/setup$} ],
       [ "POST", %r{^/2fa/enable$} ],
       [ "DELETE", %r{^/2fa/disable$} ],
-      [ "PUT", %r{^/users$} ],
-      [ "DELETE", %r{^/users$} ]
+      [ "PUT", %r{/api/users} ],
+      [ "DELETE", %r{^/users$} ],
+      [ "DELETE", %r{^/api/users/logout_all$} ]
     ]
+  end
+
+  config.warden do |manager|
+    manager.default_strategies(scope: :user).unshift :jwt
+  end
+end
+
+# Monkey patch Null strategy to use custom revocation
+Devise::JWT::RevocationStrategies::Null.class_eval do
+  def jwt_revoked?(payload, user)
+    user.jwt_revoked?(payload, user)
   end
 end

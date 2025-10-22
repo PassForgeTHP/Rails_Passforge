@@ -19,13 +19,9 @@ module Api
             uri = TotpService.provisioning_uri(secret, current_user.email)
             puts "URI générée."
 
-            puts "3. Génération du QR code..."
-            qr_code = TotpService.generate_qr_code(uri)
-            puts "QR code généré."
-
-            puts "4. Envoi de la réponse JSON..."
+            puts "3. Envoi de la réponse JSON..."
             render json: {
-              qr_code_svg: qr_code,
+              uri: uri,
               secret: secret,
               message: "Scan the QR code..."
             }, status: :ok

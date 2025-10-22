@@ -12,7 +12,8 @@ Rails.application.routes.draw do
   end
   get "up" => "rails/health#show", as: :rails_health_check
 
- resources :contacts, only: [ :create ], defaults: { format: :json }
+  get "member-data", to: "api/users#show", defaults: { format: :json }
+  resources :contacts, only: [ :create ], defaults: { format: :json }
   # API namespace
   namespace :api, defaults: { format: :json } do
     resources :passwords, only: [ :index, :show, :create, :update, :destroy ]
@@ -27,6 +28,7 @@ Rails.application.routes.draw do
       end
     end
     post "users/verify_password", to: "users#verify_password"
+    put "users", to: "users#update"
     delete "users/logout_all", to: "users#logout_all"
    end
 

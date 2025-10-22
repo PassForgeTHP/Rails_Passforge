@@ -9,30 +9,51 @@ class Api::UsersController < ApplicationController
     end
   end
 
-  def logout_all
-    puts "Logout all called, current_user: #{current_user.inspect}"
-    puts "User columns: #{User.column_names}"
-    if current_user.nil?
-      puts "Current user is nil"
-      render json: { error: "Not authenticated" }, status: :unauthorized
-      return
+  def show
+    render json: { user: current_user.as_json(only: [ :id, :email, :name ], methods: [ :avatar ]) }, status: :ok
+  end
+
+  def update
+    Rails.logger.info "JWT payload: #{request.env['warden-jwt_auth.token']&.inspect}"
+    Rails.logger.info "Current user: #{current_user&.id}"
+    Rails.logger.info "Update user params: #{user_params.inspect}"
+    Rails.logger.info "Avatar present: #{user_params[:avatar].present?}"
+    if current_user.update(user_params)
+      puts "Update successful"
+      render json: { user: current_user.as_json(only: [ :id, :email, :name ], methods: [ :avatar_url ]) }, status: :ok
+    else
+      puts "Update failed: #{current_user.errors.full_messages}"
+      render json: { errors: current_user.errors.full_messages }, status: :unprocessable_entity
     end
-    new_jti = SecureRandom.uuid
-    puts "Updating JTI to #{new_jti}"
+  end
+
+  def logout_all
     begin
-      success = current_user.update(jti: new_jti)
-      puts "Update success: #{success}"
+      puts "Logout all called, current_user: #{current_user.inspect}"
+      if current_user.nil?
+        puts "Current user is nil"
+        render json: { error: "Not authenticated" }, status: :unauthorized
+        return
+      end
+      success = current_user.update(logged_out_at: Time.current)
+      puts "Update logged_out_at success: #{success}, errors: #{current_user.errors.full_messages}"
       if success
-        puts "JTI updated successfully for user #{current_user.id}"
+        puts "Logged out all devices for user #{current_user.id}"
         render json: { message: "Logged out from all devices successfully" }, status: :ok
       else
-        puts "Failed to update JTI for user #{current_user.id}: #{current_user.errors.full_messages}"
+        puts "Failed to update logged_out_at for user #{current_user.id}: #{current_user.errors.full_messages}"
         render json: { error: "Failed to logout" }, status: :unprocessable_entity
       end
     rescue => e
       puts "Exception in logout_all: #{e.message}"
-      puts e.backtrace
+      puts e.backtrace.join("\n")
       render json: { error: e.message }, status: :internal_server_error
     end
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :avatar)
   end
 end

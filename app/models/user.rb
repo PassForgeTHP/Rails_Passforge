@@ -70,6 +70,7 @@ class User < ApplicationRecord
   end
 
   def avatar_url
-    avatar.attached? ? Rails.application.routes.url_helpers.url_for(avatar) : nil
+    return nil unless avatar.attached?
+    Rails.application.routes.url_helpers.rails_blob_path(avatar, only_path: true)
   end
 end

@@ -26,7 +26,7 @@ Rails.application.routes.draw do
       namespace :two_factor do
         post "setup", to: "two_factor_auth#setup"
         post "verify", to: "two_factor_auth#verify"
-        post "disable", to: "two_factor_auth#disable"
+        delete "disable", to: "two_factor_auth#disable"
         post "verify_login", to: "two_factor_auth#verify_login"
       end
     end

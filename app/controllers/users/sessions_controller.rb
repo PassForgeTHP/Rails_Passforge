@@ -2,7 +2,16 @@ class Users::SessionsController < Devise::SessionsController
   include Rails.application.routes.url_helpers
   respond_to :json
 
+  # Skip flash messages for API mode
+  skip_before_action :require_no_authentication, only: :create
+  before_action :sign_out_if_authenticated, only: :create
+
   private
+
+  def sign_out_if_authenticated
+    # Sign out current user if already logged in (allow re-login)
+    sign_out(current_user) if user_signed_in?
+  end
 
   def respond_with(_resource, _opts = {})
     if resource.persisted?

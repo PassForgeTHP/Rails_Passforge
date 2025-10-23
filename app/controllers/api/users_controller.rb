@@ -10,7 +10,7 @@ class Api::UsersController < ApplicationController
   end
 
   def show
-    user_data = current_user.as_json(only: [ :id, :email, :name ], methods: [ :avatar ])
+    user_data = current_user.as_json(only: [ :id, :email, :name ], methods: [ :avatar_url ])
     user_data[:two_factor_enabled] = current_user.two_factor_auth&.enabled? || false
     render json: { user: user_data }, status: :ok
   end

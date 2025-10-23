@@ -57,3 +57,5 @@ gem "rotp", "~> 6.3"
 
 # QR code generation for 2FA setup
 gem "rqrcode", "~> 2.2"
+
+gem 'bcrypt', '~> 3.1.7'

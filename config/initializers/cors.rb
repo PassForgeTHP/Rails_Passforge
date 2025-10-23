@@ -7,7 +7,7 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins ENV.fetch("CORS_ORIGINS", "http://localhost:5173").split(",")
+    origins ENV.fetch("CORS_ORIGINS", "http://localhost:5173,chrome-extension://modnkfblpeombgeanjodmnlpcihidmmj,https://pass-forge-en.netlify.app/").split(",")
 
     resource "*",
       headers: :any,

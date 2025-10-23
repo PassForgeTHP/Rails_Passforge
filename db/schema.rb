@@ -83,10 +83,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_22_101702) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    # Combined columns from both 2FA and Master Password implementations
     t.string "otp_secret"
     t.boolean "otp_required_for_login"
     t.string "jti"
     t.datetime "logged_out_at"
+    t.string "master_password_digest"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

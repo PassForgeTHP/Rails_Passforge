@@ -5,34 +5,36 @@ Rails.application.routes.draw do
                registrations: "users/registrations"
              }
 
-
-
   devise_scope :user do
     delete "/users", to: "users/registrations#destroy"
   end
+  
   get "up" => "rails/health#show", as: :rails_health_check
-
   get "member-data", to: "api/users#show", defaults: { format: :json }
-  resources :contacts, only: [ :create ], defaults: { format: :json }
+  resources :contacts, only: [:create], defaults: { format: :json }
+  
   # API namespace
   namespace :api, defaults: { format: :json } do
-    resources :passwords, only: [ :index, :show, :create, :update, :destroy ]
+    resources :passwords, only: [:index, :show, :create, :update, :destroy]
+    
+    resource :master_password, only: [:show, :create, :update] do
+      post 'verify', on: :collection
+    end
 
     # Two-factor authentication routes
     namespace :auth do
       namespace :two_factor do
         post "setup", to: "two_factor_auth#setup"
         post "verify", to: "two_factor_auth#verify"
-        delete "disable", to: "two_factor_auth#disable"
+        post "disable", to: "two_factor_auth#disable"
         post "verify_login", to: "two_factor_auth#verify_login"
       end
     end
+    
     post "users/verify_password", to: "users#verify_password"
     put "users", to: "users#update"
-    delete "users/logout_all", to: "users#logout_all"
-   end
-
-
+    delete "users/logout_all", to: "users/logout_all"
+  end
 
   # Defines the root path route ("/")
   # root "posts#index"

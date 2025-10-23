@@ -20,8 +20,17 @@ class User < ApplicationRecord
   # 2FA association
   has_one :two_factor_auth, dependent: :destroy
 
+  # Master password functionality
+  has_secure_password :master_password, validations: false
+
   # Needed for 2FA
   attr_accessor :otp_code
+
+  # Validations (combined from both implementations)
+  validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :password, presence: true, confirmation: true, length: { minimum: 8 }, on: :create
+  validates :password_confirmation, presence: true, on: :create
+  validates :master_password, length: { minimum: 8 }, allow_nil: true
 
   private
 
@@ -41,6 +50,7 @@ class User < ApplicationRecord
 
   public
 
+  # 2FA methods
   def self.generate_otp_secret
     ROTP::Base32.random_secret
   end

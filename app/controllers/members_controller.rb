@@ -8,7 +8,8 @@ class MembersController < ApplicationController
         id: current_user.id,
         name: current_user.name,
         email: current_user.email,
-        avatar: current_user.avatar.attached? ? url_for(current_user.avatar) : nil
+        avatar: current_user.avatar.attached? ? url_for(current_user.avatar) : nil,
+        two_factor_enabled: current_user.two_factor_auth&.enabled? || false
       }
     }
   end

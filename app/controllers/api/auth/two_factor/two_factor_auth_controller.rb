@@ -8,34 +8,39 @@ module Api
         # Generate a new TOTP secret and QR code for the user
         def setup
           begin
-            puts "--- DÉBUT DIAGNOSTIC 2FA ---"
-            puts "Utilisateur: #{current_user.email}"
-
-            puts "1. Génération du secret..."
+            # Generate TOTP secret
             secret = TotpService.generate_secret
-            puts "Secret généré."
 
-            puts "2. Génération de l'URI..."
+            # Generate provisioning URI
             uri = TotpService.provisioning_uri(secret, current_user.email)
-            puts "URI générée."
 
-            puts "3. Génération du QR code SVG..."
-            qr_svg = TotpService.generate_qr_code(uri)
-            puts "QR code généré."
+            # Generate QR code as PNG
+            require 'rqrcode'
+            qrcode = RQRCode::QRCode.new(uri)
+            png = qrcode.as_png(
+              bit_depth: 1,
+              border_modules: 4,
+              color_mode: ChunkyPNG::COLOR_GRAYSCALE,
+              color: "black",
+              file: nil,
+              fill: "white",
+              module_px_size: 6,
+              resize_exactly_to: false,
+              resize_gte_to: false,
+              size: 300
+            )
 
-            puts "4. Envoi de la réponse JSON..."
+            # Encode PNG to Base64
+            qr_base64 = "data:image/png;base64,#{Base64.strict_encode64(png.to_s)}"
+
             render json: {
-              qr_svg: qr_svg,
+              qr_base64: qr_base64,
               secret: secret,
-              message: "Scan the QR code..."
+              message: "Scan the QR code or use the secret key with your authenticator app"
             }, status: :ok
-            puts "--- DIAGNOSTIC TERMINÉ AVEC SUCCÈS ---"
           rescue => e
-            puts "!!! ERREUR CAPTURÉE DANS LE DIAGNOSTIC !!!"
-            puts "Message d'erreur: #{e.message}"
-            puts "Backtrace de l'erreur:"
-            puts e.backtrace.join("\n")
-            puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            Rails.logger.error "2FA Setup Error: #{e.message}"
+            Rails.logger.error e.backtrace.join("\n")
             render json: { error: "Failed to setup 2FA", details: e.message }, status: :unprocessable_entity
           end
         end

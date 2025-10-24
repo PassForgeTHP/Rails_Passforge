@@ -10,6 +10,9 @@ class Api::UsersController < ApplicationController
   end
 
   def show
+    Rails.logger.debug "🔍 [MEMBER-DATA] Authorization header: #{request.headers['Authorization']}"
+    Rails.logger.debug "🔍 [MEMBER-DATA] Current user: #{current_user.inspect}"
+
     user_data = current_user.as_json(only: [ :id, :email, :name ], methods: [ :avatar_url ])
     user_data[:two_factor_enabled] = current_user.two_factor_auth&.enabled? || false
     render json: { user: user_data }, status: :ok

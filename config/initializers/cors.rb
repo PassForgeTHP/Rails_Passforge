@@ -7,11 +7,12 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'http://localhost:5173', 'chrome-extension://modnkfblpeombgeanjodmnlpcihidmmj','https://pass-forge-en.netlify.app/'
+    origins ENV.fetch("CORS_ORIGINS", "http://localhost:5173,chrome-extension://modnkfblpeombgeanjodmnlpcihidmmj,https://pass-forge-en.netlify.app/").split(",")
 
     resource "*",
       headers: :any,
       methods: %i[get post put patch delete options head],
-             expose: %w[Authorization Uid]
+      credentials: true,
+      expose: %w[Authorization Uid]
   end
 end

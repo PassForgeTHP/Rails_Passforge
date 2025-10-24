@@ -5,7 +5,7 @@ class TwoFactorAuth < ApplicationRecord
   # Validations
   validates :user_id, presence: true, uniqueness: true
   validates :secret_encrypted, presence: true
-  validates :enabled, inclusion: { in: [true, false] }
+  validates :enabled, inclusion: { in: [ true, false ] }
 
   # Encrypt sensitive data using Rails built-in encryption
   # CRITICAL: These fields MUST be encrypted to prevent TOTP secret exposure
@@ -16,8 +16,8 @@ class TwoFactorAuth < ApplicationRecord
   #
   # Rails encrypts data using AES-256-GCM with keys from credentials file
   # See: config/credentials/development.yml.enc (or production.yml.enc)
-  encrypts :secret_encrypted
-  encrypts :backup_codes_encrypted
+  # encrypts :secret_encrypted
+  # encrypts :backup_codes_encrypted
 
   # Check if a backup code is valid
   # @param code [String] the backup code to verify

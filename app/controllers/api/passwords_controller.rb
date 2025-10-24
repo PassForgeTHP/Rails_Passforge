@@ -27,7 +27,7 @@ module Api
       passwords_query = passwords_query.by_domain(params[:domain]) if params[:domain].present?
 
       # Pagination
-      page = [params[:page].to_i, 1].max
+      page = [ params[:page].to_i, 1 ].max
       per_page = params[:per_page].to_i
       per_page = 20 if per_page <= 0
 
@@ -47,7 +47,7 @@ module Api
       }
     rescue StandardError => e
       Rails.logger.error "Password list error: #{e.class} - #{e.message}"
-      render json: { error: 'Internal server error' }, status: :internal_server_error
+      render json: { error: "Internal server error" }, status: :internal_server_error
     end
 
     # GET /api/passwords/:id
@@ -62,10 +62,10 @@ module Api
     #   - 401 Unauthorized: Missing or invalid JWT token
     def show
       @password = Password.find(params[:id])
-      return render json: { error: 'Not found' }, status: :not_found unless @password.user_id == current_user.id
+      return render json: { error: "Not found" }, status: :not_found unless @password.user_id == current_user.id
       render json: @password
     rescue ActiveRecord::RecordNotFound
-      render json: { error: 'Not found' }, status: :not_found
+      render json: { error: "Not found" }, status: :not_found
     end
 
     # POST /api/passwords
@@ -105,7 +105,7 @@ module Api
       end
     rescue StandardError => e
       Rails.logger.error "Password creation error: #{e.class} - #{e.message}"
-      render json: { error: 'Internal server error' }, status: :internal_server_error
+      render json: { error: "Internal server error" }, status: :internal_server_error
     end
 
     # PUT/PATCH /api/passwords/:id
@@ -138,7 +138,7 @@ module Api
     #   }
     def update
       @password = Password.find(params[:id])
-      return render json: { error: 'Not found' }, status: :not_found unless @password.user_id == current_user.id
+      return render json: { error: "Not found" }, status: :not_found unless @password.user_id == current_user.id
 
       if @password.update(password_params)
         render json: @password
@@ -146,7 +146,7 @@ module Api
         render json: { errors: @password.errors.full_messages }, status: :unprocessable_entity
       end
     rescue ActiveRecord::RecordNotFound
-      render json: { error: 'Not found' }, status: :not_found
+      render json: { error: "Not found" }, status: :not_found
     end
 
     # DELETE /api/passwords/:id
@@ -170,12 +170,12 @@ module Api
     #   }
     def destroy
       @password = Password.find(params[:id])
-      return render json: { error: 'Not found' }, status: :not_found unless @password.user_id == current_user.id
+      return render json: { error: "Not found" }, status: :not_found unless @password.user_id == current_user.id
 
       @password.destroy
-      render json: { message: 'Password deleted successfully' }, status: :ok
+      render json: { message: "Password deleted successfully" }, status: :ok
     rescue ActiveRecord::RecordNotFound
-      render json: { error: 'Not found' }, status: :not_found
+      render json: { error: "Not found" }, status: :not_found
     end
 
     private

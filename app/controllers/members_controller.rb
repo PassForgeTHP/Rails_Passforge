@@ -2,24 +2,15 @@ class MembersController < ApplicationController
   before_action :authenticate_user!
 
   def show
-    user = get_user_from_token
     render json: {
       message: "If you see this, you're in!",
       user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar.attached? ? url_for(user.avatar) : nil
+        id: current_user.id,
+        name: current_user.name,
+        email: current_user.email,
+        avatar: current_user.avatar.attached? ? url_for(current_user.avatar) : nil,
+        two_factor_enabled: current_user.two_factor_auth&.enabled? || false
       }
     }
-  end
-
-  private
-
-  def get_user_from_token
-    jwt_payload = JWT.decode(request.headers['Authorization'].split(' ')[1],
-                             Rails.application.credentials.devise[:jwt_secret_key]).first
-    user_id = jwt_payload['sub']
-    User.find(user_id.to_s)
   end
 end

@@ -28,7 +28,9 @@ class Users::SessionsController < Devise::SessionsController
           message: "Please enter your 2FA code to complete login"
         }, status: :ok
       else
-        # Normal login without 2FA
+        # Normal login without 2FA - generate JWT token
+        token = Warden::JWTAuth::UserEncoder.new.call(resource, :user, nil).first
+
         render json: {
           message: "You are logged in.",
           user: {
@@ -36,8 +38,9 @@ class Users::SessionsController < Devise::SessionsController
             email: resource.email,
             name: resource.name,
             avatar: resource.avatar.attached? ? url_for(resource.avatar) : nil
-          }
-        }, status: :ok
+          },
+          token: token
+        }, status: :ok, headers: { "Authorization" => "Bearer #{token}" }
       end
     else
       render json: { message: "Invalid email or password." }, status: :unauthorized

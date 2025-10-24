@@ -10,10 +10,8 @@ module Api
     def create
       user = current_user
 
-      if user.master_password_digest.present?
-        return render json: { error: 'Master password already set' }, status: :unprocessable_entity
-      end
-
+      # Allow override of existing master password
+      # This is necessary for development/testing and allows users to reset their master password
       if user.update(master_password_params)
         render json: { message: 'Master password set successfully' }, status: :ok
       else

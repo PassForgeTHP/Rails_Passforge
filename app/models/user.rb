@@ -10,8 +10,8 @@ class User < ApplicationRecord
     attachable.variant :thumb, resize_to_limit: [ 100, 100 ]
   end
 
-  validate :avatar_content_type
-  validate :avatar_size
+  validate :avatar_content_type, if: :avatar_changed?
+  validate :avatar_size, if: :avatar_changed?
 
   # Associations
   has_one :vault, dependent: :destroy
@@ -33,6 +33,10 @@ class User < ApplicationRecord
   validates :master_password, length: { minimum: 8 }, allow_nil: true
 
   private
+
+  def avatar_changed?
+    avatar.attached? && avatar.attachment.changed?
+  end
 
   def avatar_content_type
     return unless avatar.attached?

@@ -99,12 +99,13 @@ Devise.setup do |config|
   # passing skip: :sessions to `devise_for` in your config/routes.rb
   config.skip_session_storage = [ :http_auth, :user ]
 
-  config.  jwt do |jwt|
+  config.jwt do |jwt|
     if Rails.env.test?
       jwt.secret = "test_secret_key_for_jwt_authentication_in_tests"
     else
       jwt.secret = Rails.application.credentials.devise[:jwt_secret_key] || "my_secret_key"
     end
+    jwt.expiration_time = 24.hours.to_i # Token valid for 24 hours
     jwt.dispatch_requests = [
       [ "POST", %r{^/users/sign_in$} ],
       [ "POST", %r{^/api/auth/two_factor/verify_login$} ],
@@ -113,7 +114,8 @@ Devise.setup do |config|
       [ "DELETE", %r{^/2fa/disable$} ],
       [ "PUT", %r{/api/users} ],
       [ "DELETE", %r{^/users$} ],
-      [ "DELETE", %r{^/api/users/logout_all$} ]
+      [ "DELETE", %r{^/api/users/logout_all$} ],
+      [ "POST", %r{^/api/extension/token$} ]
     ]
   end
 

@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   # API namespace
   namespace :api, defaults: { format: :json } do
     resources :passwords, only: [:index, :show, :create, :update, :destroy]
-    
+
     resource :master_password, only: [:show, :create, :update] do
       post 'verify', on: :collection
     end
@@ -30,10 +30,14 @@ Rails.application.routes.draw do
         post "verify_login", to: "two_factor_auth#verify_login"
       end
     end
-    
+
     post "users/verify_password", to: "users#verify_password"
     put "users", to: "users#update"
     delete "users/logout_all", to: "users/logout_all"
+
+    # Browser extension token generation and verification
+    post "extension/token", to: "extension#generate_token"
+    get "extension/verify_token", to: "extension#verify_token"
   end
 
   # Defines the root path route ("/")

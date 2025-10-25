@@ -1,7 +1,7 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   respond_to :json
 
-  before_action :authenticate_user!, only: [:update, :destroy]
+  before_action :authenticate_user!, only: [ :update, :destroy ]
 
   def create
     build_resource(sign_up_params)
@@ -10,7 +10,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       token = Warden::JWTAuth::UserEncoder.new.call(resource, :user, nil).first
 
       render json: {
-        message: 'Signed up successfully.',
+        message: "Signed up successfully.",
         user: {
           id: resource.id,
           name: resource.name,
@@ -18,10 +18,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
           avatar: resource.avatar.attached? ? url_for(resource.avatar) : nil
         },
         token: token
-      }, status: :ok, headers: { 'Authorization' => "Bearer #{token}" }
+      }, status: :ok, headers: { "Authorization" => "Bearer #{token}" }
     else
       render json: {
-        message: 'Signup failed.',
+        message: "Signup failed.",
         errors: resource.errors.full_messages
       }, status: :unprocessable_entity
     end
@@ -33,7 +33,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
     if user.update(account_update_params)
       render json: {
-        message: 'Profile updated successfully.',
+        message: "Profile updated successfully.",
         user: {
           id: user.id,
           name: user.name,
@@ -43,7 +43,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       }, status: :ok
     else
       render json: {
-        message: 'Failed to update profile.',
+        message: "Failed to update profile.",
         errors: user.errors.full_messages
       }, status: :unprocessable_entity
     end
@@ -52,17 +52,17 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def destroy
     user = current_user
     if user.destroy
-      render json: { message: 'User account deleted successfully.' }, status: :ok
+      render json: { message: "User account deleted successfully." }, status: :ok
     else
-      render json: { message: 'Failed to delete account.', errors: user.errors.full_messages },
+      render json: { message: "Failed to delete account.", errors: user.errors.full_messages },
              status: :unprocessable_entity
     end
   end
-  
+
   private
-  
+
   def sign_up_params
-    params.require(:user).permit( :email, :password, :password_confirmation, :name)
+    params.require(:user).permit(:email, :password, :password_confirmation, :name)
   end
 
 
@@ -74,17 +74,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def register_success
     render json: {
-      message: 'Signed up sucessfully.',
+      message: "Signed up sucessfully.",
       user: resource
     }, status: :ok
   end
 
   def register_failed
-    render json: { message: 'Something went wrong.' }, status: :unprocessable_entity
+    render json: { message: "Something went wrong." }, status: :unprocessable_entity
   end
 
   def account_update_params
     params.require(:user).permit(:name, :email, :password, :password_confirmation, :current_password, :avatar)
   end
- 
 end

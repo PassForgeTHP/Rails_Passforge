@@ -43,6 +43,9 @@ config.hosts << "::1"
   # Set localhost to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
+  # Set default URL options for routes (needed for ActiveStorage URLs)
+  config.action_controller.default_url_options = { host: "localhost", port: 3000 }
+
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     user_name: Rails.application.credentials.dig(:mailjet, :api_key),

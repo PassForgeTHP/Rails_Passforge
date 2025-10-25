@@ -69,14 +69,14 @@ class PasswordTest < ActiveSupport::TestCase
     password1 = @user.passwords.create!(title: "First", password_encrypted: "enc1")
     password2 = @user.passwords.create!(title: "Second", password_encrypted: "enc2")
 
-    assert_equal [password2, password1], Password.recent.to_a
+    assert_equal [ password2, password1 ], Password.recent.to_a
   end
 
   test "should filter by domain" do
     password1 = @user.passwords.create!(title: "GitHub", password_encrypted: "enc1", domain: "github.com")
     password2 = @user.passwords.create!(title: "GitLab", password_encrypted: "enc2", domain: "gitlab.com")
 
-    assert_equal [password1], Password.by_domain("github.com").to_a
+    assert_equal [ password1 ], Password.by_domain("github.com").to_a
   end
 
   test "should search by title" do

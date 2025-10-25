@@ -2,22 +2,47 @@ module Api
   module Auth
     module TwoFactor
       class TwoFactorAuthController < ApplicationController
-        before_action :authenticate_user!, except: [:verify_login]
+        before_action :authenticate_user!, except: [ :verify_login ]
 
         # POST /api/auth/two_factor/setup
         # Generate a new TOTP secret and QR code for the user
         def setup
-          secret = TotpService.generate_secret
-          uri = TotpService.provisioning_uri(secret, current_user.email)
-          qr_code = TotpService.generate_qr_code(uri)
+          begin
+            # Generate TOTP secret
+            secret = TotpService.generate_secret
 
-          render json: {
-            qr_code: "data:image/png;base64,#{qr_code}",
-            secret: secret,
-            message: 'Scan the QR code with your authenticator app (2FAS, Google Authenticator, etc.)'
-          }, status: :ok
-        rescue => e
-          render json: { error: 'Failed to setup 2FA', details: e.message }, status: :unprocessable_entity
+            # Generate provisioning URI
+            uri = TotpService.provisioning_uri(secret, current_user.email)
+
+            # Generate QR code as PNG
+            require 'rqrcode'
+            qrcode = RQRCode::QRCode.new(uri)
+            png = qrcode.as_png(
+              bit_depth: 1,
+              border_modules: 4,
+              color_mode: ChunkyPNG::COLOR_GRAYSCALE,
+              color: "black",
+              file: nil,
+              fill: "white",
+              module_px_size: 6,
+              resize_exactly_to: false,
+              resize_gte_to: false,
+              size: 300
+            )
+
+            # Encode PNG to Base64
+            qr_base64 = "data:image/png;base64,#{Base64.strict_encode64(png.to_s)}"
+
+            render json: {
+              qr_base64: qr_base64,
+              secret: secret,
+              message: "Scan the QR code or use the secret key with your authenticator app"
+            }, status: :ok
+          rescue => e
+            Rails.logger.error "2FA Setup Error: #{e.message}"
+            Rails.logger.error e.backtrace.join("\n")
+            render json: { error: "Failed to setup 2FA", details: e.message }, status: :unprocessable_entity
+          end
         end
 
         # POST /api/auth/two_factor/verify
@@ -27,11 +52,11 @@ module Api
           code = params[:code]
 
           unless secret.present? && code.present?
-            return render json: { error: 'Secret and code are required' }, status: :bad_request
+            return render json: { error: "Secret and code are required" }, status: :bad_request
           end
 
           unless TotpService.verify_code(secret, code)
-            return render json: { error: 'Invalid verification code' }, status: :unauthorized
+            return render json: { error: "Invalid verification code" }, status: :unauthorized
           end
 
           # Generate backup codes
@@ -48,15 +73,15 @@ module Api
 
           if two_factor_auth.save
             render json: {
-              message: '2FA has been successfully enabled',
+              message: "2FA has been successfully enabled",
               backup_codes: backup_data[:codes],
-              warning: 'Save these backup codes in a secure location. They will not be shown again.'
+              warning: "Save these backup codes in a secure location. They will not be shown again."
             }, status: :ok
           else
-            render json: { error: 'Failed to enable 2FA', details: two_factor_auth.errors.full_messages }, status: :unprocessable_entity
+            render json: { error: "Failed to enable 2FA", details: two_factor_auth.errors.full_messages }, status: :unprocessable_entity
           end
         rescue => e
-          render json: { error: 'Failed to verify 2FA', details: e.message }, status: :unprocessable_entity
+          render json: { error: "Failed to verify 2FA", details: e.message }, status: :unprocessable_entity
         end
 
         # DELETE /api/auth/two_factor/disable
@@ -65,16 +90,16 @@ module Api
           two_factor_auth = current_user.two_factor_auth
 
           unless two_factor_auth
-            return render json: { error: '2FA is not enabled for this account' }, status: :bad_request
+            return render json: { error: "2FA is not enabled for this account" }, status: :bad_request
           end
 
           if two_factor_auth.destroy
-            render json: { message: '2FA has been successfully disabled' }, status: :ok
+            render json: { message: "2FA has been successfully disabled" }, status: :ok
           else
-            render json: { error: 'Failed to disable 2FA' }, status: :unprocessable_entity
+            render json: { error: "Failed to disable 2FA" }, status: :unprocessable_entity
           end
         rescue => e
-          render json: { error: 'Failed to disable 2FA', details: e.message }, status: :unprocessable_entity
+          render json: { error: "Failed to disable 2FA", details: e.message }, status: :unprocessable_entity
         end
 
         # POST /api/auth/two_factor/verify_login
@@ -83,19 +108,19 @@ module Api
           user_id = session[:pending_2fa_user_id]
 
           unless user_id
-            return render json: { error: 'No pending 2FA verification. Please login first.' }, status: :unauthorized
+            return render json: { error: "No pending 2FA verification. Please login first." }, status: :unauthorized
           end
 
           user = User.find_by(id: user_id)
           unless user
             session.delete(:pending_2fa_user_id)
-            return render json: { error: 'User not found' }, status: :not_found
+            return render json: { error: "User not found" }, status: :not_found
           end
 
           two_factor_auth = user.two_factor_auth
           unless two_factor_auth&.enabled?
             session.delete(:pending_2fa_user_id)
-            return render json: { error: '2FA is not enabled for this account' }, status: :bad_request
+            return render json: { error: "2FA is not enabled for this account" }, status: :bad_request
           end
 
           code = params[:code]
@@ -108,18 +133,18 @@ module Api
           elsif backup_code.present?
             verified = verify_and_use_backup_code(two_factor_auth, backup_code)
           else
-            return render json: { error: 'Code or backup_code is required' }, status: :bad_request
+            return render json: { error: "Code or backup_code is required" }, status: :bad_request
           end
 
           unless verified
-            return render json: { error: 'Invalid verification code' }, status: :unauthorized
+            return render json: { error: "Invalid verification code" }, status: :unauthorized
           end
 
           session.delete(:pending_2fa_user_id)
           sign_in(user)
 
           render json: {
-            message: 'Login successful',
+            message: "Login successful",
             user: {
               id: user.id,
               email: user.email,
@@ -128,7 +153,7 @@ module Api
             }
           }, status: :ok
         rescue => e
-          render json: { error: 'Failed to verify 2FA', details: e.message }, status: :unprocessable_entity
+          render json: { error: "Failed to verify 2FA", details: e.message }, status: :unprocessable_entity
         end
 
         private

@@ -39,7 +39,7 @@ class VaultTest < ActiveSupport::TestCase
 
   test "destroying user destroys associated vault" do
     vault = Vault.create!(user: @user)
-    assert_difference('Vault.count', -1) do
+    assert_difference("Vault.count", -1) do
       @user.destroy
     end
   end
